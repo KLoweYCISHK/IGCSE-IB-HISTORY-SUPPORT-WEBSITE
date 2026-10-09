@@ -1,0 +1,24 @@
+name: Unpack site
+
+on:
+  push:
+    paths: [site.tar.gz]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          tar -xzf site.tar.gz
+          git rm -q --cached site.tar.gz
+          rm -f site.tar.gz
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add History Support site (Firebase backend)"
+          git push
