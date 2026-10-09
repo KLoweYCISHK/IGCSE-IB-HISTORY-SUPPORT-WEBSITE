@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 33% 94%;
+    --foreground: 222 40% 17%;
+    --card: 40 36% 97%;
+    --card-foreground: 222 40% 17%;
+    --popover: 40 36% 97%;
+    --popover-foreground: 222 40% 17%;
+    --primary: 38 46% 25%;
+    --primary-foreground: 40 33% 95%;
+    --secondary: 40 26% 89%;
+    --secondary-foreground: 222 40% 17%;
+    --muted: 40 24% 90%;
+    --muted-foreground: 220 12% 38%;
+    --accent: 38 46% 25%;
+    --accent-foreground: 40 33% 95%;
+    --destructive: 0 58% 44%;
+    --destructive-foreground: 40 33% 95%;
+    --border: 38 20% 80%;
+    --input: 38 20% 80%;
+    --ring: 38 46% 30%;
+    --radius: 0.375rem;
+    --font-heading: 'Instrument Serif', Georgia, serif;
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+
+  ::selection {
+    background: #6F551A;
+    color: #F4EFE3;
+  }
+}
+
+@layer components {
+  .chrono-eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.28em] text-muted-foreground;
+  }
+
+  .glassine {
+    @apply transition-all duration-500 ease-out;
+  }
+  .glassine:hover {
+    @apply -translate-y-1;
+    box-shadow: 0 24px 48px -28px rgba(60, 45, 10, 0.28);
+  }
+
+  /* Rich text rendering */
+  .prose-archive {
+    @apply text-[17px] leading-[1.7] text-foreground;
+    overflow-wrap: anywhere;
+  }
+  .prose-archive h1,
+  .prose-archive h2,
+  .prose-archive h3 {
+    font-family: var(--font-heading);
+    @apply text-foreground font-normal mt-6 mb-2 leading-tight;
+  }
+  .prose-archive h1 { @apply text-3xl; }
+  .prose-archive h2 { @apply text-2xl; }
+  .prose-archive h3 { @apply text-xl; }
+  .prose-archive p { @apply my-3; }
+  .prose-archive ul { @apply my-3 space-y-1.5; list-style-type: disc; padding-left: 1.5rem; }
+  .prose-archive ol { @apply my-3 space-y-1.5; list-style-type: decimal; padding-left: 1.5rem; }
+  .prose-archive li { display: list-item; }
+  .prose-archive li::marker { color: hsl(var(--foreground)); }
+  .prose-archive ul ul, .prose-archive ol ol, .prose-archive ul ol, .prose-archive ol ul { @apply my-1.5; }
+  /* Quill editor — render list bullets natively so editing matches the page */
+  .ql-editor ul { list-style-type: disc; padding-left: 1.5em; margin: 0.4em 0; }
+  .ql-editor ol { list-style-type: decimal; padding-left: 1.5em; margin: 0.4em 0; }
+  .ql-editor li { display: list-item; }
+  .ql-editor li::marker { color: #4a4338; }
+  .prose-archive a { @apply text-[#6F551A] underline underline-offset-4 hover:text-[#5A4514]; }
+  .prose-archive strong { @apply text-foreground font-semibold; }
+  .prose-archive blockquote {
+    @apply border-l-2 border-[#6F551A] pl-4 italic text-foreground/70 my-4;
+  }
+  /* Strip pasted background highlights so content adopts the site palette */
+  .prose-archive [style*="background"] { background-color: transparent !important; }
+  .prose-archive [style*="background-color"] { background-color: transparent !important; }
+
+  /* Quill light theme */
+  .ql-toolbar.ql-snow {
+    @apply border-border bg-secondary/60 rounded-t;
+  }
+  .ql-container.ql-snow {
+    @apply border-border bg-background rounded-b;
+    font-family: var(--font-body);
+    font-size: 16px;
+  }
+  .ql-editor { min-height: 160px; @apply text-foreground; }
+  .ql-snow .ql-stroke { stroke: #4a4338; }
+  .ql-snow .ql-fill { fill: #4a4338; }
+  .ql-snow .ql-picker-label, .ql-snow .ql-picker-item { color: #4a4338; }
+  .ql-snow .ql-picker-options { background: #FBF7EE; }
+  .ql-editor.ql-blank::before { color: #8a8275; font-style: normal; }
+
+  /* Compact Quill editor for table cells */
+  .cell-editor .ql-toolbar.ql-snow { padding: 4px 6px; }
+  .cell-editor .ql-container.ql-snow { border: 0; }
+  .cell-editor .ql-editor { min-height: 70px; padding: 6px 10px; font-size: 14px; }
+
+  /* Tables inside the rich-text editor */
+  .ql-editor table { border-collapse: collapse; width: 100%; margin: 0.5em 0; }
+  .ql-editor th, .ql-editor td { border: 1px solid #d1cec6; padding: 6px 10px; min-width: 40px; vertical-align: top; }
+  .ql-editor td:empty::before { content: '\00a0'; }
+
+  /* Tables on the rendered page */
+  .prose-archive table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+  .prose-archive th, .prose-archive td { border: 1px solid hsl(var(--border)); padding: 0.5em 0.75em; vertical-align: top; text-align: left; }
+  .prose-archive th { background: hsl(var(--secondary)); font-weight: 600; }
+  .prose-archive td:empty::before { content: '\00a0'; }
+
+  /* Approach card blocks — shared by editor and rendered page */
+  .arc-card { border: 1px solid hsl(var(--border)); border-radius: 8px; padding: 14px 18px; margin: 1em 0; background: hsl(var(--card)); }
+  .arc-card[data-variant="info"] { border-left: 4px solid #446ad0; }
+  .arc-card[data-variant="warning"] { border-left: 4px solid #f69145; background: #fff7ec; }
+  .arc-card[data-variant="callout"] { background: #eef4ff; border-left: 4px solid #446ad0; }
+  .arc-card[data-variant="support"] { border-top: 4px solid #2e8540; }
+  .arc-card[data-variant="challenge"] { border-top: 4px solid #d13438; }
+  .arc-card[data-variant="cols2"], .arc-card[data-variant="cols3"] { display: flex; gap: 16px; padding: 0; background: transparent; border: 0; }
+  .arc-card[data-variant="cols2"] > .arc-card, .arc-card[data-variant="cols3"] > .arc-card { flex: 1 1 0; margin: 0; min-width: 0; }
+  .arc-card[data-variant="cols2"] > .arc-card:empty::before,
+  .arc-card[data-variant="cols3"] > .arc-card:empty::before { content: '\00a0'; }
+  @media (max-width: 700px) {
+    .arc-card[data-variant="cols2"], .arc-card[data-variant="cols3"] { flex-direction: column; }
+  }
+}

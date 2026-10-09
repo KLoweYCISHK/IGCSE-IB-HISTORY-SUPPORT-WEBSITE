@@ -1,0 +1,20 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Everyone can read the site's content.
+    // Edits go through the password-checked "edit" Cloud Function, which bypasses these rules.
+    match /{collection}/{id} {
+      allow read: if true;
+    }
+
+    // Students can add a perspective or suggest a resource without an account.
+    match /Perspective/{id} {
+      allow create: if request.resource.data.size() <= 30;
+    }
+    match /Resource/{id} {
+      allow create: if request.resource.data.is_student_submission == true
+        && request.resource.data.size() <= 30;
+    }
+  }
+}

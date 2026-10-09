@@ -1,0 +1,9 @@
+{
+  "name": "history-support-scripts",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@base44/sdk": "^0.8.53",
+    "firebase-admin": "^13.0.0"
+  }
+}
