@@ -15,7 +15,7 @@ const MODULE_OPTIONS = [
   { value: 'all', label: 'Both modules' },
 ];
 
-export default function ResourceForm({ open, onOpenChange, initial, onSave, module }) {
+export default function ResourceForm({ open, onOpenChange, initial, onSave, module, folders = [] }) {
   const { isAdmin } = useAdmin();
   const [draft, setDraft] = useState(initial || {});
   useEffect(() => { if (open) setDraft({ links: [], ...(initial || {}), module: module ? (initial?.module || module) : initial?.module }); }, [open, initial, module]);
@@ -75,6 +75,18 @@ export default function ResourceForm({ open, onOpenChange, initial, onSave, modu
 
           {!isAdmin && (
             <Input value={draft.submitted_by || ''} onChange={(e) => set('submitted_by', e.target.value)} placeholder="Your name" />
+          )}
+          {folders.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="chrono-eyebrow">Folder</p>
+              <Select value={folders.some((f) => f.id === draft.folder_id) ? draft.folder_id : 'none'} onValueChange={(v) => set('folder_id', v === 'none' ? '' : v)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">No folder</SelectItem>
+                  {folders.map((f) => <SelectItem key={f.id} value={f.id}>{f.title}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
           )}
           {module && (
             <div className="space-y-1.5">
