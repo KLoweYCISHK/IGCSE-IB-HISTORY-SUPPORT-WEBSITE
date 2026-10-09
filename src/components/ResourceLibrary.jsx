@@ -83,7 +83,7 @@ export default function ResourceLibrary({ section, caseStudy, module, title = 'T
   const load = useCallback(async () => {
     const query = { section };
     if (caseStudy) query.case_study = caseStudy;
-    const list = await store.entities.Resource.filter(query, '-created_date');
+    const list = await store.entities.Resource.filter(query, 'created_date');
     setItems(module ? list.filter((r) => r.module === module) : list);
   }, [section, caseStudy, module]);
 
