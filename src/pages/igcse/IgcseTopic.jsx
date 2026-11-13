@@ -12,7 +12,7 @@ import IgcsePaper1Exam from '@/components/igcse/IgcsePaper1Exam';
 import IgcsePaper2Links from '@/components/igcse/IgcsePaper2Links';
 import IgcsePaper2Focus from '@/components/igcse/IgcsePaper2Focus';
 import IgcseFocusUnits from '@/components/igcse/IgcseFocusUnits';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import StageFlow from '@/components/StageFlow';
 
 const TOPICS = {
   core1: {
@@ -64,7 +64,6 @@ const TOPICS = {
   },
 };
 
-const tabCls = 'rounded-none border-r border-border last:border-r-0 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] data-[state=active]:bg-[#1D4ED8] data-[state=active]:text-white data-[state=inactive]:text-foreground/60 data-[state=inactive]:hover:bg-black/[0.04]';
 
 export default function IgcseTopic() {
   const { topic } = useParams();
@@ -77,32 +76,13 @@ export default function IgcseTopic() {
 
       {cfg.isCoursework && (
         <section className="py-12 md:py-16 border-t border-border">
-          <SectionHeading eyebrow="The roadmap" title="Step by step" description="Work through each stage in turn." />
-          <Tabs defaultValue="preparing">
-            <TabsList className="inline-flex flex-wrap h-auto bg-transparent p-0 border border-border rounded-sm overflow-hidden">
-              <TabsTrigger value="preparing" className={tabCls}>Preparing</TabsTrigger>
-              <TabsTrigger value="writing" className={tabCls}>Writing</TabsTrigger>
-              <TabsTrigger value="markscheme" className={tabCls}>Examples</TabsTrigger>
-              <TabsTrigger value="checklist" className={tabCls}>Final checklist</TabsTrigger>
-            </TabsList>
-            <TabsContent value="preparing" className="mt-8">
-              <Roadmap section={cfg.page} stages={[{ key: 'preparing', label: 'Preparing' }]} />
-            </TabsContent>
-            <TabsContent value="writing" className="mt-8">
-              <Roadmap section={cfg.page} stages={[{ key: 'writing', label: 'Writing' }]} />
-            </TabsContent>
-            <TabsContent value="markscheme" className="mt-8">
-              <DocumentSection
-                section={cfg.page}
-                title="Example coursework"
-                description="Annotated examples — download them and study the marking."
-                embedded
-              />
-            </TabsContent>
-            <TabsContent value="checklist" className="mt-8">
-              <FinalChecklist page={cfg.page} title="Coursework — final checklist" />
-            </TabsContent>
-          </Tabs>
+          <SectionHeading eyebrow="The roadmap" title="Step by step" description="Follow the stages in order. Open a step, work through it, then tick it off." />
+          <StageFlow stages={[
+            { value: 'preparing', label: 'Preparing', content: <Roadmap section={cfg.page} stages={[{ key: 'preparing', label: 'Preparing' }]} /> },
+            { value: 'writing', label: 'Writing', content: <Roadmap section={cfg.page} stages={[{ key: 'writing', label: 'Writing' }]} /> },
+            { value: 'markscheme', label: 'Examples', content: <DocumentSection section={cfg.page} title="Example coursework" description="Annotated examples — download them and study the marking." embedded /> },
+            { value: 'checklist', label: 'Final checklist', content: <FinalChecklist page={cfg.page} title="Coursework — final checklist" /> },
+          ]} />
         </section>
       )}
 

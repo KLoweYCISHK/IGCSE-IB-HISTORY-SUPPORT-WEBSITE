@@ -16,9 +16,10 @@ import IgcseFocusUnitForm from './IgcseFocusUnitForm';
 // Revision notes are ordinary sections, stored on the page "<page>_revision" with module = the focus unit's id.
 // noteScope (IB Paper 2): the same focus units are shared by several case studies, each with its own notes;
 // notes are then stored with module = "<unit id>__<case study>". showNotes=false lists the units without notes.
+// seed = { section, column, module, as }: module narrows to one unit's table; as = 'specified_content' puts the column there instead.
 // seed = { section, column }: while there are no focus units yet, the teacher can create them in one click from the
 // inquiry table already on that page (first column = inquiry question, `column` = that case study's lines of inquiry).
-const cellText = (html) => new DOMParser().parseFromString(String(html || ''), 'text/html').body.textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+const cellText = (html) => new DOMParser().parseFromString(String(html || '').replace(/<br\s*\/?>|<\/p>|<\/li>/gi, ' '), 'text/html').body.textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
 const cellLines = (html) => {
   const doc = new DOMParser().parseFromString(String(html || '').replace(/<br\s*\/?>|<\/p>/gi, '\n'), 'text/html');
   const items = [...doc.querySelectorAll('li')].map((li) => li.textContent);
@@ -69,25 +70,25 @@ export default function IgcseFocusUnits({
   }, [load]);
 
   // look for an inquiry table to import from (teacher only, and only while this list is empty)
-  const seedSection = seed?.section; const seedColumn = seed?.column ?? 1;
+  const seedSection = seed?.section; const seedColumn = seed?.column ?? 1; const seedModule = seed?.module; const seedField = seed?.as || 'bullet_points';
   useEffect(() => {
     if (!editMode || !seedSection || loading || units.length > 0) { setSeedRows([]); return; }
     let live = true;
     store.entities.ContentBlock.filter({ section: seedSection }, 'order').then((blocks) => {
-      const table = blocks.find((b) => !b.is_deleted && b.kind === 'table' && b.rows?.length > 1 && b.rows[0].length > seedColumn);
+      const table = blocks.find((b) => !b.is_deleted && b.kind === 'table' && (!seedModule || b.module === seedModule) && b.rows?.length > 1 && b.rows[0].length > seedColumn);
       const rows = (table?.rows.slice(1) || [])
-        .map((r) => ({ focus_unit: cellText(r[0]), bullet_points: cellLines(r[seedColumn]) }))
+        .map((r) => ({ focus_unit: cellText(r[0]), bullet_points: [], specified_content: [], [seedField]: cellLines(r[seedColumn]) }))
         .filter((r) => r.focus_unit);
       if (live) setSeedRows(rows);
     }).catch(() => {});
     return () => { live = false; };
-  }, [editMode, seedSection, seedColumn, loading, units.length]);
+  }, [editMode, seedSection, seedColumn, seedModule, seedField, loading, units.length]);
 
   const importSeed = async () => {
     setImporting(true);
     try {
       for (let i = 0; i < seedRows.length; i++) {
-        await editDb.IgcseFocusUnit.create({ ...seedRows[i], specified_content: [], page, order: i });
+        await editDb.IgcseFocusUnit.create({ ...seedRows[i], page, order: i });
       }
     } finally { setImporting(false); load(); }
   };
@@ -175,7 +176,7 @@ export default function IgcseFocusUnits({
             <p className="text-sm font-semibold text-muted-foreground">Add your first focus unit, then open it to add its revision notes.</p>
             {seedRows.length > 0 && (
               <Button size="sm" disabled={importing} onClick={importSeed} className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white">
-                <Download className="w-3.5 h-3.5 mr-1.5" /> {importing ? 'Adding…' : `Add the ${seedRows.length} inquiry questions from the table on this page`}
+                <Download className="w-3.5 h-3.5 mr-1.5" /> {importing ? 'Adding…' : `Add the ${seedRows.length} ${seed?.noun || 'inquiry questions'} from the table on this page`}
               </Button>
             )}
           </div>

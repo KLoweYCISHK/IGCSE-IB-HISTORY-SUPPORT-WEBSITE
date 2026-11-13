@@ -78,16 +78,17 @@ export default function Paper3() {
         </div>
       </section>
 
-      <SectionCanvas page="paper3" module={unit} />
-
       <IgcseFocusUnits
         key={unit}
         page={`paper3_${unit}`}
         title={`Focus units: ${UNITS[unit].label}`}
-        description="Open a focus unit to see what you need to know and its revision notes. Tick off each revision topic as you go."
+        description="Open an inquiry topic to see its specified content and revision notes. Tick off each revision topic as you go."
+        seed={{ section: 'paper3', module: unit, column: 1, as: 'specified_content', noun: 'inquiry topics' }}
         {...IB_UNIT_LABELS}
       />
       <RevisionTopics key={`legacy-${unit}`} page="paper3" scope={unit} scopeLabel={UNITS[unit].label} />
+
+      <SectionCanvas page="paper3" module={unit} />
 
       <TextbookSection section="paper3" module={unit} />
 
