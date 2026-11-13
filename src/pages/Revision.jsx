@@ -103,6 +103,7 @@ export default function Revision() {
         sectionAction={tick}
         tableFlashcards
         keyTerms
+        keyTermsLabel={unitLabel}
         scopeSlugs
         empty={!editMode && (
           <div className="py-16 border-t border-border text-center">

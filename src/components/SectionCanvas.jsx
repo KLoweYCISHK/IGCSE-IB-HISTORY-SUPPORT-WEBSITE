@@ -7,13 +7,14 @@ import { Pencil, Trash2, Plus, ArrowUp, ArrowDown, RotateCw, ChevronDown } from 
 import SectionHeading from './SectionHeading';
 import BlockCanvas from './BlockCanvas';
 import SectionForm from './editor/SectionForm';
-import { KeyTermScope, ManageKeyTermsButton } from '@/lib/glossary';
+import { KeyTermScope, ManageKeyTermsButton, unitScope } from '@/lib/glossary';
 
 // sectionAction renders next to each heading (e.g. a "revised" tick); empty shows when there are no sections.
 // compact draws smaller, card-style subsections (used for revision notes inside a focus unit).
 // scopeSlugs keeps two units' subsections apart when they share a title such as "Key terms".
+// keyTerms switches key words on; they belong to this unit (page + module). keyTermsLabel is the unit's name, shown to the teacher.
 // collapsible (with compact) gives each subsection a "Show notes" drop-down; closed for students until they open it, open while editing.
-export default function SectionCanvas({ page, caseStudy, module, className = '', filterFn, sectionAction, empty, tableFlashcards, keyTerms = false, compact = false, addLabel = 'Add section', scopeSlugs = false, collapsible = false, onChange }) {
+export default function SectionCanvas({ page, caseStudy, module, className = '', filterFn, sectionAction, empty, tableFlashcards, keyTerms = false, keyTermsLabel, compact = false, addLabel = 'Add section', scopeSlugs = false, collapsible = false, onChange }) {
   const { editMode } = useAdmin();
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -89,7 +90,7 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
   }
 
   return (
-    <KeyTermScope on={keyTerms}>
+    <KeyTermScope on={keyTerms} scope={unitScope(page, module)} label={keyTermsLabel}>
     <div className={className}>
       {sections.map((s, i) => {
         const canFold = compact && collapsible;

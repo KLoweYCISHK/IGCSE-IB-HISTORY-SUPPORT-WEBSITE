@@ -164,7 +164,7 @@ export default function IgcseFocusUnits({
           <p>Open a focus unit and use "Add revision subsection". Give each subsection a title, then add text, images, files or links inside it as usual.</p>
           <p>Students get a "Mark as revised" tick on every subsection. Any two-column table (term and meaning, date and event) also gets a "Test yourself with flashcards" button.</p>
           <p>Each subsection opens with "Show notes". "Quiz me" builds a quiz from the key words in the unit's notes and from two-column tables with at least three rows.</p>
-          <p>Key words: select a word in your saved notes and click "Make key word" to give it a meaning and Simplified Chinese. It is then highlighted everywhere it appears, and students click it to see the pop-up.</p>
+          <p>Key words: select a word in your saved notes and click "Make key word" to give it a meaning and Simplified Chinese. It belongs to that unit: it is highlighted wherever it appears in that unit&apos;s notes, and students click it to see the pop-up. Use "Key words for this unit" to manage them.</p>
         </div>
       )}
 
@@ -249,7 +249,7 @@ export default function IgcseFocusUnits({
                     <div>
                       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                         <h3 className="font-display text-2xl">Revision notes</h3>
-                        {c.total > 0 && <UnitQuiz page={revisionPage} sections={notes.filter((n) => n.module === noteKey(u))} title={u.focus_unit} />}
+                        {c.total > 0 && <UnitQuiz page={revisionPage} unit={noteKey(u)} sections={notes.filter((n) => n.module === noteKey(u))} title={u.focus_unit} />}
                       </div>
                       <SectionCanvas
                         key={noteKey(u)}
@@ -260,6 +260,7 @@ export default function IgcseFocusUnits({
                         scopeSlugs
                         tableFlashcards
                         keyTerms
+                        keyTermsLabel={u.focus_unit}
                         addLabel="Add revision subsection"
                         onChange={loadNotes}
                         sectionAction={(s) => <RevisedTick id={s.id} small />}

@@ -164,3 +164,14 @@
   padding: 0 4px; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px;
 }
 .key-term:hover, .key-term:focus-visible { background: #1D4ED8; color: #FFFFFF; outline: none; }
+
+/* Images placed inside the text of notes: free width, optional text wrap */
+.ql-editor img, .prose-archive img { max-width: 100%; height: auto; }
+.ql-editor img { cursor: pointer; }
+.ql-editor img[data-align="left"], .prose-archive img[data-align="left"] { float: left; margin: 0.25em 1.25em 0.75em 0; }
+.ql-editor img[data-align="right"], .prose-archive img[data-align="right"] { float: right; margin: 0.25em 0 0.75em 1.25em; }
+.ql-editor img[data-align="center"], .prose-archive img[data-align="center"] { display: block; margin: 0.75em auto; }
+.ql-editor::after, .prose-archive::after { content: ''; display: block; clear: both; }
+@media (max-width: 640px) {
+  .prose-archive img[data-align="left"], .prose-archive img[data-align="right"] { float: none; display: block; margin: 0.75em auto; }
+}
