@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Check, Circle } from 'lucide-react';
 import { store } from '@/api/firebaseClient';
 import { useAdmin } from '@/lib/AdminContext';
 import { useTrack } from '@/lib/TrackContext';
 import { REVISION } from '@/lib/revisionUnits';
-import { toggle, useProgress } from '@/lib/progress';
+import { useProgress } from '@/lib/progress';
+import RevisedTick from '@/components/RevisedTick';
 import PageHero from '@/components/PageHero';
 import SectionCanvas from '@/components/SectionCanvas';
 import ProgressTransfer from '@/components/ProgressTransfer';
@@ -50,18 +50,7 @@ export default function Revision() {
   const current = counts[unit] || { total: 0, done: 0 };
   const unitLabel = cfg.units.find((u) => u.key === unit)?.label;
 
-  const tick = (s) => {
-    const done = !!revised[s.id];
-    return (
-      <button onClick={() => toggle('revised', s.id)} aria-pressed={done}
-        className={`inline-flex items-center gap-2 min-h-[44px] rounded-full px-5 text-sm font-bold transition-colors ${
-          done ? 'bg-teal-700 text-white hover:bg-teal-800' : 'border-2 border-border hover:border-[#1D4ED8]'
-        }`}>
-        {done ? <Check className="w-4 h-4" /> : <Circle className="w-4 h-4" />}
-        {done ? 'Revised' : 'Mark as revised'}
-      </button>
-    );
-  };
+  const tick = (s) => <RevisedTick id={s.id} />;
 
   return (
     <div>
@@ -113,6 +102,7 @@ export default function Revision() {
         module={unit}
         sectionAction={tick}
         tableFlashcards
+        scopeSlugs
         empty={!editMode && (
           <div className="py-16 border-t border-border text-center">
             <p className="font-display text-3xl">Notes for {unitLabel} are on their way.</p>

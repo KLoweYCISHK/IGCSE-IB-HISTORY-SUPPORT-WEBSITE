@@ -20,7 +20,6 @@ export const IGCSE_NAV = [
   { to: '/igcse/paper1', label: 'Paper 1' },
   { to: '/igcse/paper2', label: 'Paper 2' },
   { to: '/igcse/coursework', label: 'Coursework' },
-  { to: '/revision', label: 'Revise' },
 ];
 
 export default function SiteNav() {

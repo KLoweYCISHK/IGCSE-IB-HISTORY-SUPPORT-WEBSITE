@@ -9,7 +9,9 @@ import BlockCanvas from './BlockCanvas';
 import SectionForm from './editor/SectionForm';
 
 // sectionAction renders next to each heading (e.g. a "revised" tick); empty shows when there are no sections.
-export default function SectionCanvas({ page, caseStudy, module, className = '', filterFn, sectionAction, empty, tableFlashcards }) {
+// compact draws smaller, card-style subsections (used for revision notes inside a focus unit).
+// scopeSlugs keeps two units' subsections apart when they share a title such as "Key terms".
+export default function SectionCanvas({ page, caseStudy, module, className = '', filterFn, sectionAction, empty, tableFlashcards, compact = false, addLabel = 'Add section', scopeSlugs = false, onChange }) {
   const { editMode } = useAdmin();
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,9 +45,13 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
   const save = async (draft) => {
     const { id, ...data } = draft;
     if (id) await editDb.PageSection.update(id, data);
-    else await editDb.PageSection.create({ ...data, page, module: data.module || module || 'all', order: sections.length });
+    else {
+      const slug = scopeSlugs && module ? `${module}__${data.slug}` : data.slug;
+      await editDb.PageSection.create({ ...data, slug, page, module: data.module || module || 'all', order: sections.length });
+    }
     setEditing(null);
-    load();
+    await load();
+    onChange?.();
   };
 
   const move = async (index, dir) => {
@@ -62,10 +68,11 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
   const remove = async (s) => {
     await editDb.ContentBlock.updateMany({ section: page, sub: s.slug }, { $set: { is_deleted: true } });
     await editDb.PageSection.update(s.id, { is_deleted: true });
-    load();
+    await load();
+    onChange?.();
   };
 
-  if (loading) return <div className="h-24 animate-pulse bg-black/[0.04] rounded" />;
+  if (loading) return <div className={`${compact ? 'h-12' : 'h-24'} animate-pulse bg-black/[0.04] rounded`} />;
 
   if (error) {
     return (
@@ -81,7 +88,7 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
   return (
     <div className={className}>
       {sections.map((s, i) => (
-        <section key={s.id} className="relative group py-16 md:py-20 border-t border-border">
+        <section key={s.id} className={compact ? 'relative group rounded-sm border border-border bg-background p-5 md:p-6 mb-4' : 'relative group py-16 md:py-20 border-t border-border'}>
           {editMode && (
             <div className="absolute -top-3 right-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-card border border-border rounded px-1 py-1">
               <button onClick={() => move(i, -1)} className="p-1.5 hover:text-[#1D4ED8]"><ArrowUp className="w-4 h-4" /></button>
@@ -90,7 +97,17 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
               <button onClick={() => remove(s)} className="p-1.5 hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
             </div>
           )}
-          <SectionHeading eyebrow={s.eyebrow} title={s.title} right={sectionAction ? sectionAction(s) : undefined} />
+          {compact ? (
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+              <div>
+                {s.eyebrow && <p className="chrono-eyebrow mb-1">{s.eyebrow}</p>}
+                <h4 className="font-display text-xl md:text-2xl leading-tight">{s.title}</h4>
+              </div>
+              {sectionAction ? sectionAction(s) : null}
+            </div>
+          ) : (
+            <SectionHeading eyebrow={s.eyebrow} title={s.title} right={sectionAction ? sectionAction(s) : undefined} />
+          )}
           <BlockCanvas section={page} sub={s.slug} caseStudy={caseStudy} module={module} emptyLabel="No content here yet." tableFlashcards={tableFlashcards} />
         </section>
       ))}
@@ -98,9 +115,9 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
       {sections.length === 0 && empty}
 
       {editMode && (
-        <div className="py-10 border-t border-dashed border-border">
+        <div className={compact ? 'pt-2' : 'py-10 border-t border-dashed border-border'}>
           <Button variant="outline" size="sm" onClick={() => setEditing({})}>
-            <Plus className="w-3.5 h-3.5 mr-1.5" /> Add section
+            <Plus className="w-3.5 h-3.5 mr-1.5" /> {addLabel}
           </Button>
         </div>
       )}

@@ -19,12 +19,11 @@ const IB_INDEX = [
 ];
 
 const IGCSE_INDEX = [
-  { to: '/igcse/core1', label: 'Core 1', note: 'Core content part 1 — 1917–1939' },
-  { to: '/igcse/core2', label: 'Core 2', note: 'Core content part 2 — 1945–1989' },
-  { to: '/igcse/depth', label: 'Depth Study', note: 'Weimar & Nazi Germany' },
+  { to: '/igcse/core1', label: 'Core 1', note: 'Focus units and revision notes · 1917–1939' },
+  { to: '/igcse/core2', label: 'Core 2', note: 'Focus units and revision notes · 1945–1989' },
+  { to: '/igcse/depth', label: 'Depth Study', note: 'Focus units and revision notes · Weimar & Nazi Germany' },
   { to: '/igcse/paper1', label: 'Paper 1', note: 'Knowledge based exam support' },
   { to: '/igcse/paper2', label: 'Paper 2', note: 'Source based exam support' },
-  { to: '/revision', label: 'Revision notes', note: 'Notes, key terms and flashcards. Tick off topics as you go.' },
   { to: '/igcse/coursework', label: 'Coursework', note: 'Step-by-step guidance & examples' },
 ];
 
@@ -40,13 +39,13 @@ function ContinuePanel({ track }) {
   return (
     <div className="w-full lg:w-[380px] shrink-0 rounded-sm bg-[#1D4ED8] text-white p-6 flex flex-col gap-3">
       <p className="text-xs font-semibold uppercase tracking-[0.12em]">{resume ? 'Pick up where you left off' : 'Start here'}</p>
-      <p className="font-display text-2xl leading-tight">{resume ? resume.label : 'Revision notes'}</p>
+      <p className="font-display text-2xl leading-tight">{resume ? resume.label : track === 'igcse' ? 'Core 1 revision' : 'Revision notes'}</p>
       <p className="text-sm">
         {ticks || stars
           ? `${ticks} topic${ticks === 1 ? '' : 's'} revised · ${stars} historian${stars === 1 ? '' : 's'} saved on this device`
           : 'Tick off topics as you revise. Your progress saves on this device, no login needed.'}
       </p>
-      <Link to={resume ? resume.path : '/revision'}
+      <Link to={resume ? resume.path : track === 'igcse' ? '/igcse/core1' : '/revision'}
         className="mt-1 inline-flex items-center justify-center gap-2 min-h-[46px] rounded-full bg-[#111827] text-white font-bold hover:bg-black">
         {resume ? 'Continue' : 'Start revising'} <ArrowRight className="w-4 h-4" />
       </Link>
