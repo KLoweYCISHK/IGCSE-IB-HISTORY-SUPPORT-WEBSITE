@@ -8,6 +8,7 @@ import { Plus, Pencil, Trash2, ArrowUp, ArrowDown, ChevronDown, Check } from 'lu
 import SectionHeading from '@/components/SectionHeading';
 import SectionCanvas from '@/components/SectionCanvas';
 import RevisedTick from '@/components/RevisedTick';
+import UnitQuiz from '@/components/UnitQuiz';
 import ProgressTransfer from '@/components/ProgressTransfer';
 import IgcseFocusUnitForm from './IgcseFocusUnitForm';
 
@@ -126,6 +127,7 @@ export default function IgcseFocusUnits({
           <p className="font-bold">Adding revision notes (only you see this)</p>
           <p>Open a focus unit and use "Add revision subsection". Give each subsection a title, then add text, images, files or links inside it as usual.</p>
           <p>Students get a "Mark as revised" tick on every subsection. Any two-column table (term and meaning, date and event) also gets a "Test yourself with flashcards" button.</p>
+          <p>Each subsection opens with "Show notes". "Quiz me" builds a quiz from the key words in the unit's notes and from two-column tables with at least three rows.</p>
           <p>Key words: select a word in your saved notes and click "Make key word" to give it a meaning and Simplified Chinese. It is then highlighted everywhere it appears, and students click it to see the pop-up.</p>
         </div>
       )}
@@ -202,7 +204,10 @@ export default function IgcseFocusUnits({
 
                     {!showNotes ? (notesHint && <p className="font-semibold text-[#1E40AF]">{notesHint}</p>) : (
                     <div>
-                      <h3 className="font-display text-2xl mb-4">Revision notes</h3>
+                      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <h3 className="font-display text-2xl">Revision notes</h3>
+                        {c.total > 0 && <UnitQuiz page={revisionPage} sections={notes.filter((n) => n.module === noteKey(u))} title={u.focus_unit} />}
+                      </div>
                       <SectionCanvas
                         key={noteKey(u)}
                         page={revisionPage}

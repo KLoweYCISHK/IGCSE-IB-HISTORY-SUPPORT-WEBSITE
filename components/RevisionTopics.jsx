@@ -8,6 +8,7 @@ import { Plus, Pencil, Trash2, ArrowUp, ArrowDown, ChevronDown, Check, ArrowRigh
 import SectionHeading from './SectionHeading';
 import SectionCanvas from './SectionCanvas';
 import RevisedTick from './RevisedTick';
+import UnitQuiz from './UnitQuiz';
 import ProgressTransfer from './ProgressTransfer';
 import SectionForm from './editor/SectionForm';
 
@@ -182,6 +183,11 @@ export default function RevisionTopics({ page, scope, scopeLabel }) {
               </div>
               {isOpen && (
                 <div id={`rev-topic-${t.id}`} className="border-t border-border p-5 md:p-6">
+                  {c.total > 0 && (
+                    <div className="flex justify-end mb-4">
+                      <UnitQuiz page={`${page}_revision`} sections={notes.filter((n) => n.module === t.id)} title={t.title} />
+                    </div>
+                  )}
                   <SectionCanvas
                     page={`${page}_revision`}
                     module={t.id}
