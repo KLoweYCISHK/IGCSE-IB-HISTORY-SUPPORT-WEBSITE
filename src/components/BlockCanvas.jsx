@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import ResizableImage from './ResizableImage';
 import { Plus, Type, Table2, ImageIcon, Link2, FileDown } from 'lucide-react';
 import ArchiveTable from './ArchiveTable';
+import TableFlashcards, { canFlashcard } from './TableFlashcards';
 import LinkPill from './LinkPill';
 import BlockToolbar from './BlockToolbar';
 import BlockForm from './editor/BlockForm';
@@ -54,7 +55,7 @@ function ImageBlock({ b }) {
   );
 }
 
-export default function BlockCanvas({ section, sub, caseStudy, module, emptyLabel = 'Nothing here yet.' }) {
+export default function BlockCanvas({ section, sub, caseStudy, module, emptyLabel = 'Nothing here yet.', tableFlashcards = false }) {
   const { editMode } = useAdmin();
   const [blocks, setBlocks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -139,6 +140,7 @@ export default function BlockCanvas({ section, sub, caseStudy, module, emptyLabe
 
                     {b.title && b.kind !== 'link' && b.kind !== 'file' && <h3 className="font-display text-2xl md:text-3xl mb-4">{b.title}</h3>}
 
+                    {b.kind === 'table' && tableFlashcards && canFlashcard(b.rows) && <TableFlashcards rows={b.rows} title={b.title} />}
                     {b.kind === 'table' && <ArchiveTable rows={b.rows} />}
 
                     {b.kind === 'image' && b.image_url && <ImageBlock b={b} />}

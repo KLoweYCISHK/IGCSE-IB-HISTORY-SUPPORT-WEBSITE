@@ -91,7 +91,7 @@ export default function IgcsePaper2Links({ section = 'igcse_paper2', title = 'Pa
           {filtered.map((e, i) => (
             <div key={e.id} className="border border-border rounded-sm p-6 bg-card">
               <div className="flex items-baseline gap-4 mb-3 flex-wrap">
-                <span className="font-mono text-xs text-[#6F551A]">{String(i + 1).padStart(2, '0')}</span>
+                <span className="font-mono text-xs text-[#1D4ED8]">{String(i + 1).padStart(2, '0')}</span>
                 <h4 className="font-display text-xl leading-snug">{e.title}</h4>
                 {e.topic && (
                   <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground border border-border rounded px-2 py-1">{e.topic}</span>

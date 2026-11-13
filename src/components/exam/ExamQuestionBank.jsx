@@ -72,7 +72,7 @@ export default function ExamQuestionBank({ items, section, editMode, onEdit, onD
             <div key={item.id} className="border border-border rounded-sm p-6 bg-card">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-baseline gap-4">
-                  <span className="font-mono text-xs text-[#6F551A]">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="font-mono text-xs text-[#1D4ED8]">{String(i + 1).padStart(2, '0')}</span>
                   <h4 className="font-display text-xl leading-snug">{item.question}</h4>
                 </div>
                 <div className="flex flex-wrap gap-2 shrink-0 justify-end">

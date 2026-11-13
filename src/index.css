@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,30 +6,30 @@
 
 @layer base {
   :root {
-    --background: 40 33% 94%;
-    --foreground: 222 40% 17%;
-    --card: 40 36% 97%;
-    --card-foreground: 222 40% 17%;
-    --popover: 40 36% 97%;
-    --popover-foreground: 222 40% 17%;
-    --primary: 38 46% 25%;
-    --primary-foreground: 40 33% 95%;
-    --secondary: 40 26% 89%;
-    --secondary-foreground: 222 40% 17%;
-    --muted: 40 24% 90%;
-    --muted-foreground: 220 12% 38%;
-    --accent: 38 46% 25%;
-    --accent-foreground: 40 33% 95%;
-    --destructive: 0 58% 44%;
-    --destructive-foreground: 40 33% 95%;
-    --border: 38 20% 80%;
-    --input: 38 20% 80%;
-    --ring: 38 46% 30%;
-    --radius: 0.375rem;
-    --font-heading: 'Instrument Serif', Georgia, serif;
-    --font-display: 'Instrument Serif', Georgia, serif;
+    --background: 0 0% 100%;
+    --foreground: 221 39% 11%;
+    --card: 220 27% 96%;
+    --card-foreground: 221 39% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 221 39% 11%;
+    --primary: 224 76% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 27% 96%;
+    --secondary-foreground: 221 39% 11%;
+    --muted: 220 27% 96%;
+    --muted-foreground: 215 14% 34%;
+    --accent: 224 76% 48%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 42%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 218 20% 86%;
+    --input: 218 20% 80%;
+    --ring: 224 76% 48%;
+    --radius: 1rem;
+    --font-heading: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
     --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --font-mono: 'Inter', ui-sans-serif, system-ui, sans-serif;
   }
 }
 
@@ -40,27 +40,27 @@
 
   body {
     @apply bg-background text-foreground font-body antialiased;
-    font-size: 17px;
-    line-height: 1.65;
+    font-size: 16px;
+    line-height: 1.6;
   }
 
   ::selection {
-    background: #6F551A;
-    color: #F4EFE3;
+    background: #1D4ED8;
+    color: #FFFFFF;
   }
 }
 
 @layer components {
   .chrono-eyebrow {
-    @apply font-mono text-[11px] uppercase tracking-[0.28em] text-muted-foreground;
+    @apply font-body text-[12px] font-semibold uppercase tracking-[0.12em] text-muted-foreground;
   }
 
   .glassine {
-    @apply transition-all duration-500 ease-out;
+    @apply transition-all duration-200 ease-out;
   }
   .glassine:hover {
     @apply -translate-y-1;
-    box-shadow: 0 24px 48px -28px rgba(60, 45, 10, 0.28);
+    box-shadow: 0 18px 36px -24px rgba(17, 24, 39, 0.35);
   }
 
   /* Rich text rendering */
@@ -72,7 +72,7 @@
   .prose-archive h2,
   .prose-archive h3 {
     font-family: var(--font-heading);
-    @apply text-foreground font-normal mt-6 mb-2 leading-tight;
+    @apply text-foreground font-bold mt-6 mb-2 leading-tight;
   }
   .prose-archive h1 { @apply text-3xl; }
   .prose-archive h2 { @apply text-2xl; }
@@ -88,10 +88,10 @@
   .ql-editor ol { list-style-type: decimal; padding-left: 1.5em; margin: 0.4em 0; }
   .ql-editor li { display: list-item; }
   .ql-editor li::marker { color: #4a4338; }
-  .prose-archive a { @apply text-[#6F551A] underline underline-offset-4 hover:text-[#5A4514]; }
+  .prose-archive a { @apply text-[#1D4ED8] underline underline-offset-4 hover:text-[#1E40AF]; }
   .prose-archive strong { @apply text-foreground font-semibold; }
   .prose-archive blockquote {
-    @apply border-l-2 border-[#6F551A] pl-4 italic text-foreground/70 my-4;
+    @apply border-l-2 border-[#1D4ED8] pl-4 italic text-foreground/70 my-4;
   }
   /* Strip pasted background highlights so content adopts the site palette */
   .prose-archive [style*="background"] { background-color: transparent !important; }
@@ -110,7 +110,7 @@
   .ql-snow .ql-stroke { stroke: #4a4338; }
   .ql-snow .ql-fill { fill: #4a4338; }
   .ql-snow .ql-picker-label, .ql-snow .ql-picker-item { color: #4a4338; }
-  .ql-snow .ql-picker-options { background: #FBF7EE; }
+  .ql-snow .ql-picker-options { background: #FFFFFF; }
   .ql-editor.ql-blank::before { color: #8a8275; font-style: normal; }
 
   /* Compact Quill editor for table cells */
@@ -144,3 +144,16 @@
     .arc-card[data-variant="cols2"], .arc-card[data-variant="cols3"] { flex-direction: column; }
   }
 }
+/* Study desk look: bold grotesque headings, tighter tracking */
+.font-display, .font-heading { font-weight: 700; letter-spacing: -0.025em; }
+.font-mono { letter-spacing: 0.08em; font-weight: 600; }
+@media (prefers-reduced-motion: reduce) {
+  .glassine, .flip-inner { transition: none !important; }
+  .glassine:hover { transform: none; }
+}
+/* Flip cards (historians bank and key-term flashcards) */
+.flip { perspective: 1200px; }
+.flip-inner { position: relative; transition: transform 0.45s ease; transform-style: preserve-3d; }
+.flip-inner.is-flipped { transform: rotateY(180deg); }
+.flip-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.flip-back { position: absolute; inset: 0; transform: rotateY(180deg); }

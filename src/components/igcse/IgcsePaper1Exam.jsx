@@ -20,13 +20,13 @@ function QuestionCard({ q, i, editMode, onEdit, onDelete }) {
     <div className="border border-border rounded-sm p-6 bg-card">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-baseline gap-4">
-          <span className="font-mono text-xs text-[#6F551A]">{String(i + 1).padStart(2, '0')}</span>
+          <span className="font-mono text-xs text-[#1D4ED8]">{String(i + 1).padStart(2, '0')}</span>
           <h4 className="font-display text-xl leading-snug">{q.question}</h4>
         </div>
         <div className="flex shrink-0 justify-end items-center">
           <button
             onClick={() => setShow((s) => !s)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-sm font-mono text-[10px] uppercase tracking-wider text-foreground/70 hover:text-[#6F551A] hover:border-[#6F551A] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-border rounded-sm font-mono text-[10px] uppercase tracking-wider text-foreground/70 hover:text-[#1D4ED8] hover:border-[#1D4ED8] transition-colors"
           >
             {show ? <><EyeOff className="w-3.5 h-3.5" /> Hide</> : <><Eye className="w-3.5 h-3.5" /> Mark scheme</>}
           </button>
@@ -211,7 +211,7 @@ export default function IgcsePaper1Exam({ section = 'igcse_paper1', title = 'Pap
           <button
             key={t.value}
             onClick={() => setQType(t.value)}
-            className={`px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors ${i === QUESTION_TYPES.length - 1 ? '' : 'border-r border-border'} ${qType === t.value ? 'bg-[#6F551A] text-[#F4EFE3]' : 'text-foreground/60 hover:bg-black/[0.04]'}`}
+            className={`px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors ${i === QUESTION_TYPES.length - 1 ? '' : 'border-r border-border'} ${qType === t.value ? 'bg-[#1D4ED8] text-white' : 'text-foreground/60 hover:bg-black/[0.04]'}`}
           >
             {t.label}
           </button>

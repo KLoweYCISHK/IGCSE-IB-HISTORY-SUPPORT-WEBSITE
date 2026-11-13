@@ -13,7 +13,7 @@ export default function LinkCredentials({ username, password }) {
         onClick={() => setShow((s) => !s)}
         title={show ? 'Hide login' : 'Show login'}
         aria-label={show ? 'Hide login' : 'Show login'}
-        className="inline-flex items-center justify-center w-9 h-9 shrink-0 rounded-full border border-border bg-secondary text-muted-foreground hover:text-[#6F551A] hover:border-accent/40 transition-colors"
+        className="inline-flex items-center justify-center w-9 h-9 shrink-0 rounded-full border border-border bg-secondary text-muted-foreground hover:text-[#1D4ED8] hover:border-accent/40 transition-colors"
       >
         {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
       </button>

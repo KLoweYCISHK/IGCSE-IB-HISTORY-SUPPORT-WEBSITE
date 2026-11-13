@@ -29,7 +29,7 @@ export default function Paper1() {
         image="https://media.base44.com/images/public/6a9374897e9609e0d36beee4/4e12252d0_generated_db98e7d4.png"
       />
 
-      <div className="sticky top-[92px] z-30 -mx-6 md:mx-0 px-6 md:px-0 py-4 bg-[#F4EFE3]/90 backdrop-blur border-y border-border">
+      <div className="sticky top-[92px] z-30 -mx-6 md:mx-0 px-6 md:px-0 py-4 bg-[#FFFFFF]/90 backdrop-blur border-y border-border">
         <CaseStudyFilter value={caseStudy} onChange={setCaseStudy} options={PAPER1_CASES} />
       </div>
 

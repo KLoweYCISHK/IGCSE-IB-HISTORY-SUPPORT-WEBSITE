@@ -77,18 +77,18 @@ export default function FinalChecklist({ page, title = 'Final checklist' }) {
           <li key={it.id} className="group relative flex items-start gap-3 border border-border rounded-sm bg-card px-4 py-3">
             {editMode && (
               <div className="absolute -top-3 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-card border border-border rounded px-1 py-1">
-                <button onClick={() => move(i, -1)} className="p-1.5 hover:text-[#6F551A]"><ArrowUp className="w-4 h-4" /></button>
-                <button onClick={() => move(i, 1)} className="p-1.5 hover:text-[#6F551A]"><ArrowDown className="w-4 h-4" /></button>
-                <button onClick={() => { setEditing(it); setDraft(it.text); }} className="p-1.5 hover:text-[#6F551A]"><Pencil className="w-4 h-4" /></button>
+                <button onClick={() => move(i, -1)} className="p-1.5 hover:text-[#1D4ED8]"><ArrowUp className="w-4 h-4" /></button>
+                <button onClick={() => move(i, 1)} className="p-1.5 hover:text-[#1D4ED8]"><ArrowDown className="w-4 h-4" /></button>
+                <button onClick={() => { setEditing(it); setDraft(it.text); }} className="p-1.5 hover:text-[#1D4ED8]"><Pencil className="w-4 h-4" /></button>
                 <button onClick={() => remove(it.id)} className="p-1.5 hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
               </div>
             )}
             <button
               onClick={() => toggle(it.id)}
-              className="mt-1 w-5 h-5 shrink-0 border-2 border-foreground/40 rounded-sm flex items-center justify-center hover:border-[#6F551A] transition-colors"
+              className="mt-1 w-5 h-5 shrink-0 border-2 border-foreground/40 rounded-sm flex items-center justify-center hover:border-[#1D4ED8] transition-colors"
               aria-label="Toggle item"
             >
-              {checked[it.id] && <span className="w-2.5 h-2.5 bg-[#6F551A] rounded-[2px]" />}
+              {checked[it.id] && <span className="w-2.5 h-2.5 bg-[#1D4ED8] rounded-[2px]" />}
             </button>
             <div
               className={`flex-1 prose-archive ${checked[it.id] ? 'line-through text-foreground/40' : ''}`}

@@ -15,6 +15,8 @@ import IA from '@/pages/IA';
 import EE from '@/pages/EE';
 import { TrackProvider } from '@/lib/TrackContext';
 import IgcseTopic from '@/pages/igcse/IgcseTopic';
+import Revision from '@/pages/Revision';
+import Historians from '@/pages/Historians';
 
 const AppRoutes = () => {
   return (
@@ -28,6 +30,8 @@ const AppRoutes = () => {
         <Route path="/ia" element={<IA />} />
         <Route path="/ee" element={<EE />} />
         <Route path="/igcse/:topic" element={<IgcseTopic />} />
+        <Route path="/revision" element={<Revision />} />
+        <Route path="/historians" element={<Historians />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

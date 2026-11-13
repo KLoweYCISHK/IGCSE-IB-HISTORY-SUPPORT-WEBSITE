@@ -7,11 +7,11 @@ export default function BlockToolbar({ dragHandleProps, onEdit, onRemove }) {
       <span
         {...dragHandleProps}
         title="Drag to reorder or move section"
-        className="p-1.5 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-[#6F551A]"
+        className="p-1.5 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-[#1D4ED8]"
       >
         <GripVertical className="w-4 h-4" />
       </span>
-      <button onClick={onEdit} className="p-1.5 hover:text-[#6F551A]"><Pencil className="w-4 h-4" /></button>
+      <button onClick={onEdit} className="p-1.5 hover:text-[#1D4ED8]"><Pencil className="w-4 h-4" /></button>
       <button onClick={onRemove} className="p-1.5 hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
     </div>
   );

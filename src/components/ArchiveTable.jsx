@@ -12,7 +12,7 @@ export default function ArchiveTable({ rows = [] }) {
             <col key={i} />
           ))}
         </colgroup>
-        <thead className="bg-[#E8E0CE]">
+        <thead className="bg-[#E8ECF3]">
           <tr>
             {head.map((h, i) => (
               <th key={i} className="px-4 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/80 border-b border-border align-top">

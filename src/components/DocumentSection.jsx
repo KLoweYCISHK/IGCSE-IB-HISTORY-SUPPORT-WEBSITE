@@ -48,7 +48,7 @@ export default function DocumentSection({
         description={description}
         right={
           editMode ? (
-            <Button onClick={() => setEditing({})} className="bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]">
+            <Button onClick={() => setEditing({})} className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white">
               <Plus className="w-4 h-4 mr-1.5" /> Add a document
             </Button>
           ) : null
@@ -61,7 +61,7 @@ export default function DocumentSection({
         <div className="grid sm:grid-cols-2 gap-5">
           {items.map((d) => (
             <div key={d.id} className="glassine group relative border border-border rounded-sm bg-card p-5 flex items-start gap-4">
-              <div className="shrink-0 w-12 h-12 rounded-sm bg-secondary flex items-center justify-center text-[#6F551A]">
+              <div className="shrink-0 w-12 h-12 rounded-sm bg-secondary flex items-center justify-center text-[#1D4ED8]">
                 <FileText className="w-5 h-5" />
               </div>
               <div className="min-w-0 flex-1">
@@ -77,7 +77,7 @@ export default function DocumentSection({
                     download={d.file_name || undefined}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-3 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#6F551A] hover:text-[#5A4514]"
+                    className="mt-3 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#1D4ED8] hover:text-[#1E40AF]"
                   >
                     <Download className="w-3.5 h-3.5" /> Download
                   </a>
@@ -85,7 +85,7 @@ export default function DocumentSection({
               </div>
               {editMode && (
                 <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition bg-card/90 border border-border rounded">
-                  <button onClick={() => setEditing(d)} className="p-1.5 hover:text-[#6F551A]"><Pencil className="w-4 h-4" /></button>
+                  <button onClick={() => setEditing(d)} className="p-1.5 hover:text-[#1D4ED8]"><Pencil className="w-4 h-4" /></button>
                   <button onClick={() => remove(d)} className="p-1.5 hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
                 </div>
               )}
@@ -111,7 +111,7 @@ function IaMarks({ doc }) {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#6F551A] hover:text-[#5A4514]"
+        className="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-[#1D4ED8] hover:text-[#1E40AF]"
       >
         {open ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
         {open ? 'Hide marks' : 'View marks'}
@@ -122,7 +122,7 @@ function IaMarks({ doc }) {
             <div key={s.label} className="text-sm">
               <div className="flex items-baseline justify-between gap-3">
                 <span className="text-foreground/70">{s.label}</span>
-                <span className="font-mono text-xs text-[#6F551A]">{s.mark != null ? `${s.mark} / ${s.max}` : `— / ${s.max}`}</span>
+                <span className="font-mono text-xs text-[#1D4ED8]">{s.mark != null ? `${s.mark} / ${s.max}` : `— / ${s.max}`}</span>
               </div>
               {s.reason && <p className="text-foreground/55 leading-relaxed">{s.reason}</p>}
             </div>

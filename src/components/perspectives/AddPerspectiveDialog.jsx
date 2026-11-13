@@ -53,8 +53,8 @@ export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial
             </div>
           )}
           <div className="space-y-1.5">
-            <p className="chrono-eyebrow">Historian / school of thought</p>
-            <Input value={draft.name || ''} onChange={(e) => set('name', e.target.value)} placeholder="e.g. Richard Pipes — Liberal school" />
+            <p className="chrono-eyebrow">Historian</p>
+            <Input value={draft.name || ''} onChange={(e) => set('name', e.target.value)} placeholder="e.g. Richard Pipes" />
           </div>
           <div className="space-y-1.5">
             <p className="chrono-eyebrow">Which part of the unit?</p>
@@ -62,6 +62,16 @@ export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial
               <SelectTrigger><SelectValue placeholder="Choose a topic" /></SelectTrigger>
               <SelectContent>
                 {(UNITS[effectiveUnit]?.topics || []).map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <p className="chrono-eyebrow">School of thought (optional)</p>
+            <Select value={draft.school || ''} onValueChange={(v) => set('school', v === 'none' ? '' : v)}>
+              <SelectTrigger><SelectValue placeholder="Choose a school of thought" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Not sure / none</SelectItem>
+                {(UNITS[effectiveUnit]?.schools || []).map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -82,7 +92,7 @@ export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial
 
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button disabled={!valid || saving} onClick={submit} className="bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]">
+          <Button disabled={!valid || saving} onClick={submit} className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white">
             {saving ? 'Saving…' : 'Submit perspective'}
           </Button>
         </DialogFooter>

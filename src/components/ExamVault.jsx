@@ -97,7 +97,7 @@ export default function ExamVault({ section, caseStudy, module, title = 'The Exa
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors ${i === TABS.length - 1 ? '' : 'border-r border-border'} ${tab === t.key ? 'bg-[#6F551A] text-[#F4EFE3]' : 'text-foreground/60 hover:bg-black/[0.04]'}`}
+            className={`px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors ${i === TABS.length - 1 ? '' : 'border-r border-border'} ${tab === t.key ? 'bg-[#1D4ED8] text-white' : 'text-foreground/60 hover:bg-black/[0.04]'}`}
           >
             {t.label}
           </button>

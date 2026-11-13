@@ -77,7 +77,7 @@ export default function BlockForm({ open, onOpenChange, initial, onSave }) {
                   step={1}
                   value={draft.image_width ?? 100}
                   onChange={(e) => set('image_width', Number(e.target.value))}
-                  className="w-full accent-[#6F551A]"
+                  className="w-full accent-[#1D4ED8]"
                 />
                 <p className="font-mono text-[11px] text-muted-foreground/70">Drag to set any width — the image keeps its natural height.</p>
               </div>

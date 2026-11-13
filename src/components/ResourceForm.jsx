@@ -50,7 +50,7 @@ export default function ResourceForm({ open, onOpenChange, initial, onSave, modu
             <div className="rounded-sm border border-dashed border-border p-3 space-y-3">
               <div className="flex items-center justify-between">
                 <p className="chrono-eyebrow">Links within this resource</p>
-                <Button type="button" variant="ghost" size="sm" onClick={addLink} className="text-[#6F551A]">
+                <Button type="button" variant="ghost" size="sm" onClick={addLink} className="text-[#1D4ED8]">
                   <Plus className="w-3.5 h-3.5 mr-1" /> Add link
                 </Button>
               </div>
@@ -110,7 +110,7 @@ export default function ResourceForm({ open, onOpenChange, initial, onSave, modu
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button disabled={!draft.title} onClick={() => onSave(draft)} className="bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]">Save</Button>
+          <Button disabled={!draft.title} onClick={() => onSave(draft)} className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white">Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

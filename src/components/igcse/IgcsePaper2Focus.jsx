@@ -85,7 +85,7 @@ export default function IgcsePaper2Focus({ title = 'Topic focus by year', descri
             return (
               <div key={f.id} className="group relative border border-border rounded-sm p-6 bg-card">
                 <div className="flex items-baseline gap-4 mb-4 flex-wrap">
-                  <span className="font-display text-3xl leading-none text-[#6F551A]">{f.year}</span>
+                  <span className="font-display text-3xl leading-none text-[#1D4ED8]">{f.year}</span>
                   {u && (
                     <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground border border-border rounded px-2 py-1">{PAGE_LABELS[u.page] || u.page}</span>
                   )}

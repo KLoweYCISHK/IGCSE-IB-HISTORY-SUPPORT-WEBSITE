@@ -29,25 +29,25 @@ export default function AdminBar() {
     <>
       {!isAdmin ? (
         <div className="fixed bottom-5 right-5 z-50">
-          <button onClick={openPrompt} className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-[#6F551A] border border-border bg-[#FBF7EE]/90 backdrop-blur px-4 py-2.5 rounded-full">
+          <button onClick={openPrompt} className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-[#1D4ED8] border border-border bg-[#FFFFFF]/90 backdrop-blur px-4 py-2.5 rounded-full">
             <Lock className="w-3 h-3" /> Edit mode
           </button>
         </div>
       ) : (
-        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 border border-border bg-[#FBF7EE]/95 backdrop-blur px-3 py-2 rounded-full shadow-2xl">
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2 border border-border bg-[#FFFFFF]/95 backdrop-blur px-3 py-2 rounded-full shadow-2xl">
           <Button
             size="sm"
             onClick={() => setEditMode(!editMode)}
-            className={editMode ? 'bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]' : ''}
+            className={editMode ? 'bg-[#1D4ED8] hover:bg-[#1E40AF] text-white' : ''}
             variant={editMode ? 'default' : 'outline'}
           >
             {editMode ? <Unlock className="w-3.5 h-3.5 mr-1.5" /> : <Lock className="w-3.5 h-3.5 mr-1.5" />}
             {editMode ? 'Editing' : 'Edit mode'}
           </Button>
-          <button onClick={() => setTrashOpen(true)} className="p-2 text-muted-foreground hover:text-[#6F551A]" title="Trash">
+          <button onClick={() => setTrashOpen(true)} className="p-2 text-muted-foreground hover:text-[#1D4ED8]" title="Trash">
             <Trash2 className="w-4 h-4" />
           </button>
-          <button onClick={lock} className="p-2 text-muted-foreground hover:text-[#6F551A]" title="Lock editing">
+          <button onClick={lock} className="p-2 text-muted-foreground hover:text-[#1D4ED8]" title="Lock editing">
             <LogOut className="w-4 h-4" />
           </button>
         </div>

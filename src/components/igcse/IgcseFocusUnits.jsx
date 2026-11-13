@@ -82,7 +82,7 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
         ) : null
       ) : (
         <div className="border border-border rounded-sm overflow-hidden bg-card">
-          <div className="grid grid-cols-3 bg-[#E8E0CE]">
+          <div className="grid grid-cols-3 bg-[#E8ECF3]">
             <div className="px-4 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/80 border-b border-border">Focus unit</div>
             <div className="px-4 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/80 border-b border-border border-l">Focus points</div>
             <div className="px-4 py-3 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground/80 border-b border-border border-l">Specified content</div>
@@ -91,9 +91,9 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
             <div key={u.id} className="group relative grid grid-cols-3 border-b border-border last:border-b-0">
               {editMode && (
                 <div className="absolute top-1/2 -translate-y-1/2 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-card border border-border rounded px-1 py-1">
-                  <button onClick={() => move(i, -1)} className="p-1.5 hover:text-[#6F551A]"><ArrowUp className="w-4 h-4" /></button>
-                  <button onClick={() => move(i, 1)} className="p-1.5 hover:text-[#6F551A]"><ArrowDown className="w-4 h-4" /></button>
-                  <button onClick={() => setEditing(u)} className="p-1.5 hover:text-[#6F551A]"><Pencil className="w-4 h-4" /></button>
+                  <button onClick={() => move(i, -1)} className="p-1.5 hover:text-[#1D4ED8]"><ArrowUp className="w-4 h-4" /></button>
+                  <button onClick={() => move(i, 1)} className="p-1.5 hover:text-[#1D4ED8]"><ArrowDown className="w-4 h-4" /></button>
+                  <button onClick={() => setEditing(u)} className="p-1.5 hover:text-[#1D4ED8]"><Pencil className="w-4 h-4" /></button>
                   <button onClick={() => remove(u.id)} className="p-1.5 hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
                 </div>
               )}
