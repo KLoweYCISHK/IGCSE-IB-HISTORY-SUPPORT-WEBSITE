@@ -8,18 +8,36 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UNITS } from '@/lib/perspectiveTopics';
 
-export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial, onSaved }) {
+// "  structuralist " → "Structuralist"; a typed school that matches a listed one takes the listed spelling,
+// so the same school is never split into two groups.
+function tidySchool(typed, listed) {
+  const t = (typed || '').trim().replace(/\s+/g, ' ').replace(/\s+school$/i, '');
+  if (!t) return '';
+  return listed.find((s) => s.toLowerCase() === t.toLowerCase()) || t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+// `schools` (optional): schools of thought already used in the bank, so ones students typed earlier appear in the list.
+export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial, onSaved, schools = [] }) {
   const [draft, setDraft] = useState({});
   const [saving, setSaving] = useState(false);
-  useEffect(() => { if (open) setDraft(initial || {}); }, [open, initial]);
+  const [ownSchool, setOwnSchool] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    setDraft(initial || {});
+    const listed = [...(UNITS[initial?.unit || unit]?.schools || []), ...schools];
+    setOwnSchool(Boolean(initial?.school) && !listed.includes(initial.school));
+  }, [open, initial]);
   const set = (k, v) => setDraft((d) => ({ ...d, [k]: v }));
 
   const allowUnitSelect = !unit;
   const effectiveUnit = draft.unit || unit;
+  const unitSchools = UNITS[effectiveUnit]?.schools || [];
+  const schoolOptions = [...unitSchools, ...schools.filter((s) => !unitSchools.includes(s))];
 
   const submit = async () => {
     setSaving(true);
     const { id, ...data } = draft;
+    if (ownSchool) data.school = tidySchool(data.school, schoolOptions);
     const db = getEditPassword() ? editDb : store.entities;
     if (id) await db.Perspective.update(id, data);
     else await db.Perspective.create({ ...data, unit: effectiveUnit });
@@ -65,13 +83,20 @@ export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial
           </div>
           <div className="space-y-1.5">
             <p className="chrono-eyebrow">School of thought</p>
-            <Select value={draft.school || ''} onValueChange={(v) => set('school', v === 'none' ? '' : v)}>
+            <Select
+              value={ownSchool ? 'own' : draft.school || ''}
+              onValueChange={(v) => { setOwnSchool(v === 'own'); set('school', v === 'none' || v === 'own' ? '' : v); }}
+            >
               <SelectTrigger><SelectValue placeholder="Choose a school of thought" /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">Not sure / none</SelectItem>
-                {(UNITS[effectiveUnit]?.schools || []).map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                {schoolOptions.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                <SelectItem value="own">Other – type your own</SelectItem>
               </SelectContent>
             </Select>
+            {ownSchool && (
+              <Input autoFocus maxLength={40} value={draft.school || ''} onChange={(e) => set('school', e.target.value)} placeholder="Type the school of thought, e.g. Structuralist" />
+            )}
           </div>
           <div className="space-y-1.5">
             <p className="chrono-eyebrow">The idea</p>
