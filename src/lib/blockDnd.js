@@ -1,11 +1,15 @@
 import { store } from '@/api/firebaseClient';
 import { editDb } from '@/api/editor';
 
+// A drop zone's id carries section/sub/caseStudy/module. It is JSON because a section's
+// slug can itself contain "__" (revision subsections are stored as "<unit>__<slug>").
 export const makeDroppableId = (section, sub, caseStudy, module) =>
-  `${section}__${sub || ''}__${caseStudy || 'all'}__${module || 'all'}`;
+  JSON.stringify([section, sub || '', caseStudy || 'all', module || 'all']);
 
 export const parseDroppableId = (id) => {
-  const [section, sub, caseStudy, module] = (id || '').split('__');
+  let parts;
+  try { parts = JSON.parse(id); } catch { parts = null; }
+  const [section, sub, caseStudy, module] = Array.isArray(parts) ? parts : [];
   return {
     section,
     sub,
@@ -25,10 +29,24 @@ const loadOrdered = async ({ section, sub, caseStudy, module }) => {
 };
 
 const reindex = (list) =>
-  editDb.ContentBlock.bulkUpdate(list.map((b, i) => ({ id: b.id, order: i })));
+  (list.length ? editDb.ContentBlock.bulkUpdate(list.map((b, i) => ({ id: b.id, order: i }))) : null);
+
+// Puts a block into dst = { section, sub, caseStudy, module } at `index` (past the end = last),
+// then tidies the order of the place it came from.
+const relocate = async (blockId, src, dst, index) => {
+  await editDb.ContentBlock.update(blockId, {
+    section: dst.section,
+    sub: dst.sub,
+    case_study: dst.caseStudy || 'all',
+    module: dst.module || 'all',
+  });
+  const dList = (await loadOrdered(dst)).filter((b) => b.id !== blockId);
+  dList.splice(Math.min(index, dList.length), 0, { id: blockId });
+  await reindex(dList);
+  if (src) await reindex((await loadOrdered(src)).filter((b) => b.id !== blockId));
+};
 
 // Handles both within-section reorder and cross-section block moves.
-// droppableId encodes section/sub/caseStudy/module; draggableId is the block id.
 export const handleBlockDragEnd = async (result) => {
   const { source, destination, draggableId } = result;
   if (!destination || !draggableId) return;
@@ -36,6 +54,7 @@ export const handleBlockDragEnd = async (result) => {
 
   const src = parseDroppableId(source.droppableId);
   const dst = parseDroppableId(destination.droppableId);
+  if (!src.section || !dst.section) return;
 
   if (source.droppableId === destination.droppableId) {
     const list = await loadOrdered(src);
@@ -44,18 +63,25 @@ export const handleBlockDragEnd = async (result) => {
     list.splice(destination.index, 0, moved);
     await reindex(list);
   } else {
-    // Reassign the block to the destination section/sub/case/module, then fix ordering on both sides.
-    await editDb.ContentBlock.update(draggableId, {
-      section: dst.section,
-      sub: dst.sub,
-      case_study: dst.caseStudy || 'all',
-      module: dst.module || 'all',
-    });
-    const dList = (await loadOrdered(dst)).filter((b) => b.id !== draggableId);
-    dList.splice(destination.index, 0, { id: draggableId });
-    await reindex(dList);
-    await reindex(await loadOrdered(src));
+    await relocate(draggableId, src, dst, destination.index);
   }
 
+  window.dispatchEvent(new Event('archive:reload'));
+};
+
+// "Move to…" picker: sends a block to any section on the site, open or closed.
+// target = a PageSection record; place = 'top' | 'bottom'.
+export const moveBlockToSection = async (block, target, place = 'bottom') => {
+  const src = {
+    section: block.section,
+    sub: block.sub,
+    module: block.module && block.module !== 'all' ? block.module : undefined,
+  };
+  const dst = {
+    section: target.page,
+    sub: target.slug,
+    module: target.module && target.module !== 'all' ? target.module : undefined,
+  };
+  await relocate(block.id, src, dst, place === 'top' ? 0 : Number.MAX_SAFE_INTEGER);
   window.dispatchEvent(new Event('archive:reload'));
 };

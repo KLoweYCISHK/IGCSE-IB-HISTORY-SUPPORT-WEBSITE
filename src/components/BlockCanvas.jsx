@@ -12,6 +12,7 @@ import TableFlashcards, { canFlashcard } from './TableFlashcards';
 import LinkPill from './LinkPill';
 import BlockToolbar from './BlockToolbar';
 import BlockForm from './editor/BlockForm';
+import MoveBlockDialog from './editor/MoveBlockDialog';
 import { makeDroppableId } from '@/lib/blockDnd';
 
 function ImageBlock({ b }) {
@@ -60,6 +61,7 @@ export default function BlockCanvas({ section, sub, caseStudy, module, emptyLabe
   const [blocks, setBlocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
+  const [moving, setMoving] = useState(null);
 
   const load = useCallback(async () => {
     const query = { section, sub };
@@ -122,7 +124,7 @@ export default function BlockCanvas({ section, sub, caseStudy, module, emptyLabe
                     <Draggable key={b.id} draggableId={b.id} index={i} isDragDisabled={!editMode}>
                       {(prov) => (
                         <div ref={prov.innerRef} {...prov.draggableProps} className="relative group">
-                          {editMode && <BlockToolbar dragHandleProps={prov.dragHandleProps} onEdit={() => setEditing(b)} onRemove={() => remove(b.id)} />}
+                          {editMode && <BlockToolbar dragHandleProps={prov.dragHandleProps} onMove={() => setMoving(b)} onEdit={() => setEditing(b)} onRemove={() => remove(b.id)} />}
                           <LinkPill b={b} />
                         </div>
                       )}
@@ -136,7 +138,7 @@ export default function BlockCanvas({ section, sub, caseStudy, module, emptyLabe
               <Draggable key={b.id} draggableId={b.id} index={i} isDragDisabled={!editMode}>
                 {(prov) => (
                   <article ref={prov.innerRef} {...prov.draggableProps} className="relative group">
-                    {editMode && <BlockToolbar dragHandleProps={prov.dragHandleProps} onEdit={() => setEditing(b)} onRemove={() => remove(b.id)} />}
+                    {editMode && <BlockToolbar dragHandleProps={prov.dragHandleProps} onMove={() => setMoving(b)} onEdit={() => setEditing(b)} onRemove={() => remove(b.id)} />}
 
                     {b.title && b.kind !== 'link' && b.kind !== 'file' && <h3 className="font-display text-2xl md:text-3xl mb-4">{b.title}</h3>}
 
@@ -189,10 +191,11 @@ export default function BlockCanvas({ section, sub, caseStudy, module, emptyLabe
               <Button variant="outline" size="sm" onClick={() => setEditing({ kind: 'file' })}>
                 <FileDown className="w-3.5 h-3.5 mr-1.5" /> File
               </Button>
-              <span className="chrono-eyebrow self-center ml-2 flex items-center gap-1"><Plus className="w-3 h-3" /> add a block · drag the handle to place it</span>
+              <span className="chrono-eyebrow self-center ml-2 flex items-center gap-1"><Plus className="w-3 h-3" /> add a block · drag the handle to place it, or use the folder button to send it to any section</span>
             </div>
           )}
 
+          <MoveBlockDialog block={moving} onOpenChange={(o) => !o && setMoving(null)} />
           <BlockForm open={!!editing} onOpenChange={(o) => !o && setEditing(null)} initial={editing} onSave={save} />
         </div>
       )}
