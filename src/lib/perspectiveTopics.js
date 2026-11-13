@@ -88,3 +88,6 @@ export function maskSchools(text, unit) {
   const names = [...(UNITS[unit]?.schools || [])].sort((a, b) => b.length - a.length);
   return names.reduce((t, n) => t.replace(new RegExp(`\\b${n}s?\\b`, 'gi'), '_____'), String(text || ''));
 }
+
+// students judge how convincing each perspective is when they add it
+export const CONVINCING_LEVELS = ['Very convincing', 'Partly convincing', 'Not very convincing'];

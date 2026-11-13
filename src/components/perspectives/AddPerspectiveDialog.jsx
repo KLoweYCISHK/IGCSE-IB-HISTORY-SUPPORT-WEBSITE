@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UNITS } from '@/lib/perspectiveTopics';
+import { UNITS, CONVINCING_LEVELS } from '@/lib/perspectiveTopics';
 
 export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial, onSaved }) {
   const [draft, setDraft] = useState({});
@@ -28,7 +28,9 @@ export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial
     onSaved();
   };
 
-  const valid = draft.name && draft.topic && draft.argument && effectiveUnit;
+  // new perspectives must be evaluated; older ones can still be edited without one
+  const evaluated = draft.id || (draft.convincing && (draft.evaluation || '').trim());
+  const valid = draft.name && draft.topic && draft.argument && effectiveUnit && evaluated;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -74,6 +76,16 @@ export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial
           <div className="space-y-1.5">
             <p className="chrono-eyebrow">The idea</p>
             <Textarea rows={5} value={draft.argument || ''} onChange={(e) => set('argument', e.target.value)} placeholder="Summarise what this school of thought argues, in your own words…" />
+          </div>
+          <div className="space-y-1.5">
+            <p className="chrono-eyebrow">How convincing is it?</p>
+            <Select value={draft.convincing || ''} onValueChange={(v) => set('convincing', v)}>
+              <SelectTrigger><SelectValue placeholder="Choose a judgement" /></SelectTrigger>
+              <SelectContent>
+                {CONVINCING_LEVELS.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Textarea rows={4} value={draft.evaluation || ''} onChange={(e) => set('evaluation', e.target.value)} placeholder="Explain your judgement. What evidence supports this view? What does it leave out or play down? Who wrote it, when, and why might that shape it?" />
           </div>
           <div className="space-y-1.5">
             <p className="chrono-eyebrow">Example historian</p>

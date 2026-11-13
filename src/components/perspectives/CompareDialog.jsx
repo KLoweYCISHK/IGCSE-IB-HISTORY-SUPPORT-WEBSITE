@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { schoolOf, schoolPhrase } from '@/lib/perspectiveTopics';
-import { SchoolTag } from './PerspectiveCard';
+import { SchoolTag, Evaluation } from './PerspectiveCard';
 
 export default function CompareDialog({ items, open, onOpenChange }) {
   const [a, b] = items;
@@ -20,6 +20,7 @@ export default function CompareDialog({ items, open, onOpenChange }) {
                   <SchoolTag item={item} large />
                   <p className="text-xs font-semibold text-foreground/60">{item.topic}</p>
                   <p className="leading-relaxed">{item.argument}</p>
+                  <Evaluation item={item} />
                 </div>
               ))}
             </div>

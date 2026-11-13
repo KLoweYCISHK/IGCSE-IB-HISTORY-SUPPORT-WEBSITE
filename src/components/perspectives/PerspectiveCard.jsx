@@ -14,6 +14,18 @@ export function SchoolTag({ item, large = false }) {
   );
 }
 
+export function Evaluation({ item, query = '' }) {
+  if (!item.convincing && !item.evaluation) return null;
+  return (
+    <div className="rounded-lg border border-border bg-background px-4 py-3 space-y-1">
+      <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#1E40AF]">
+        How convincing?{item.convincing ? ` ${item.convincing}` : ''}
+      </p>
+      {item.evaluation && <p className="text-sm leading-relaxed text-foreground/80"><Highlight text={item.evaluation} query={query} /></p>}
+    </div>
+  );
+}
+
 export function EssayStarters({ item }) {
   const [copied, setCopied] = useState(null);
   const copy = async (text, i) => {
@@ -60,6 +72,8 @@ export default function PerspectiveCard({ item, query = '', canManage, onEdit, o
 
       {/* the idea comes first; the historian is only an example of the school */}
       <p className="text-[17px] leading-relaxed text-foreground"><Highlight text={item.argument} query={query} /></p>
+
+      <Evaluation item={item} query={query} />
 
       {historianName(item).toLowerCase() !== schoolOf(item).toLowerCase() && (
         <p className="text-sm text-foreground/65">

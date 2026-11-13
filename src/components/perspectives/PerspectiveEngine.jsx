@@ -74,7 +74,7 @@ export default function PerspectiveEngine({ unit }) {
       (topic === 'all' || i.topic === topic) &&
       (school === 'all' || schoolOf(i) === school) &&
       (mode !== 'saved' || saved[i.id]) &&
-      matchesQuery([i.name, i.topic, i.argument, i.source_text, schoolOf(i)].filter(Boolean).join(' '), query)
+      matchesQuery([i.name, i.topic, i.argument, i.evaluation, i.source_text, schoolOf(i)].filter(Boolean).join(' '), query)
     ),
     [items, topic, school, query, mode, saved]
   );
