@@ -9,11 +9,10 @@ import { useTrack } from '@/lib/TrackContext';
 import { useProgress } from '@/lib/progress';
 
 const IB_INDEX = [
-  { to: '/paper-1', label: 'Paper 1', note: 'Source-based prescribed subject' },
-  { to: '/paper-2', label: 'Paper 2', note: 'Three case studies: Hitler · Castro · Chiang Kai-shek' },
-  { to: '/paper-3', label: 'Paper 3', note: 'Depth study & historical perspectives' },
-  { to: '/revision', label: 'Revision notes', note: 'Notes, key terms and flashcards. Tick off topics as you go.' },
-  { to: '/historians', label: 'Historians bank', note: 'Browse, flashcards, quiz and your essay toolkit' },
+  { to: '/paper-1', label: 'Paper 1', note: 'Source paper, exam questions and revision notes' },
+  { to: '/paper-2', label: 'Paper 2', note: 'Hitler · Castro · Chiang Kai-shek, with revision notes' },
+  { to: '/paper-3', label: 'Paper 3', note: 'Depth study, revision notes and perspectives' },
+  { to: '/historians', label: 'Perspectives bank', note: 'Schools of thought: browse, flashcards, quiz and your essay toolkit' },
   { to: '/ia', label: 'Internal Assessment', note: 'Preparing · Writing · Mark scheme' },
   { to: '/ee', label: 'Extended Essay', note: 'Preparing · Writing · Reflection' },
 ];
@@ -39,13 +38,13 @@ function ContinuePanel({ track }) {
   return (
     <div className="w-full lg:w-[380px] shrink-0 rounded-sm bg-[#1D4ED8] text-white p-6 flex flex-col gap-3">
       <p className="text-xs font-semibold uppercase tracking-[0.12em]">{resume ? 'Pick up where you left off' : 'Start here'}</p>
-      <p className="font-display text-2xl leading-tight">{resume ? resume.label : track === 'igcse' ? 'Core 1 revision' : 'Revision notes'}</p>
+      <p className="font-display text-2xl leading-tight">{resume ? resume.label : track === 'igcse' ? 'Core 1 revision' : 'Paper 1 revision'}</p>
       <p className="text-sm">
         {ticks || stars
           ? `${ticks} topic${ticks === 1 ? '' : 's'} revised · ${stars} historian${stars === 1 ? '' : 's'} saved on this device`
           : 'Tick off topics as you revise. Your progress saves on this device, no login needed.'}
       </p>
-      <Link to={resume ? resume.path : track === 'igcse' ? '/igcse/core1' : '/revision'}
+      <Link to={resume ? resume.path : track === 'igcse' ? '/igcse/core1' : '/paper-1'}
         className="mt-1 inline-flex items-center justify-center gap-2 min-h-[46px] rounded-full bg-[#111827] text-white font-bold hover:bg-black">
         {resume ? 'Continue' : 'Start revising'} <ArrowRight className="w-4 h-4" />
       </Link>

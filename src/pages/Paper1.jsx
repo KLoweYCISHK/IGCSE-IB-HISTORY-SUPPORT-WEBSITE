@@ -4,6 +4,7 @@ import SectionCanvas from '@/components/SectionCanvas';
 import ResourceLibrary from '@/components/ResourceLibrary';
 import ExamVault from '@/components/ExamVault';
 import TextbookSection from '@/components/TextbookSection';
+import RevisionTopics, { RevisionCaseList } from '@/components/RevisionTopics';
 import CaseStudyFilter from '@/components/CaseStudyFilter';
 
 const PAPER1_CASES = [
@@ -37,6 +38,8 @@ export default function Paper1() {
         <>
           <SectionCanvas page="paper1" />
 
+          <RevisionCaseList page="paper1" cases={PAPER1_CASES.filter((c) => c.value !== 'all')} onPick={setCaseStudy} />
+
           <ExamVault
             section="paper1"
             title="The Exam Vault"
@@ -46,7 +49,10 @@ export default function Paper1() {
           <TextbookSection section="paper1" caseStudy="all" />
         </>
       ) : (
-        <ResourceLibrary section="paper1" caseStudy={caseStudy} />
+        <>
+          <RevisionTopics key={caseStudy} page="paper1" scope={caseStudy} scopeLabel={PAPER1_CASES.find((c) => c.value === caseStudy)?.label} />
+          <ResourceLibrary section="paper1" caseStudy={caseStudy} />
+        </>
       )}
     </div>
   );

@@ -7,11 +7,12 @@ import { Pencil, Trash2, Plus, ArrowUp, ArrowDown, RotateCw } from 'lucide-react
 import SectionHeading from './SectionHeading';
 import BlockCanvas from './BlockCanvas';
 import SectionForm from './editor/SectionForm';
+import { KeyTermScope, ManageKeyTermsButton } from '@/lib/glossary';
 
 // sectionAction renders next to each heading (e.g. a "revised" tick); empty shows when there are no sections.
 // compact draws smaller, card-style subsections (used for revision notes inside a focus unit).
 // scopeSlugs keeps two units' subsections apart when they share a title such as "Key terms".
-export default function SectionCanvas({ page, caseStudy, module, className = '', filterFn, sectionAction, empty, tableFlashcards, compact = false, addLabel = 'Add section', scopeSlugs = false, onChange }) {
+export default function SectionCanvas({ page, caseStudy, module, className = '', filterFn, sectionAction, empty, tableFlashcards, keyTerms = false, compact = false, addLabel = 'Add section', scopeSlugs = false, onChange }) {
   const { editMode } = useAdmin();
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -86,6 +87,7 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
   }
 
   return (
+    <KeyTermScope on={keyTerms}>
     <div className={className}>
       {sections.map((s, i) => (
         <section key={s.id} className={compact ? 'relative group rounded-sm border border-border bg-background p-5 md:p-6 mb-4' : 'relative group py-16 md:py-20 border-t border-border'}>
@@ -115,14 +117,16 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
       {sections.length === 0 && empty}
 
       {editMode && (
-        <div className={compact ? 'pt-2' : 'py-10 border-t border-dashed border-border'}>
+        <div className={`flex flex-wrap gap-2 ${compact ? 'pt-2' : 'py-10 border-t border-dashed border-border'}`}>
           <Button variant="outline" size="sm" onClick={() => setEditing({})}>
             <Plus className="w-3.5 h-3.5 mr-1.5" /> {addLabel}
           </Button>
+          {keyTerms && <ManageKeyTermsButton />}
         </div>
       )}
 
       <SectionForm open={!!editing} onOpenChange={(o) => !o && setEditing(null)} initial={editing} onSave={save} page={page} module={module} />
     </div>
+    </KeyTermScope>
   );
 }

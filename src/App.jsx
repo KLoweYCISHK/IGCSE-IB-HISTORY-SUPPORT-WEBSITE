@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import ScrollToTop from './components/ScrollToTop';
 import { AdminProvider } from '@/lib/AdminContext';
+import { GlossaryProvider } from '@/lib/glossary';
 import Layout from '@/components/Layout';
 import Home from '@/pages/Home';
 import HistoricalConcepts from '@/pages/HistoricalConcepts';
@@ -47,7 +48,9 @@ function App() {
           <ScrollToTop />
           <AdminProvider>
             <TrackProvider>
-              <AppRoutes />
+              <GlossaryProvider>
+                <AppRoutes />
+              </GlossaryProvider>
             </TrackProvider>
           </AdminProvider>
         </Router>

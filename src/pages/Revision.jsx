@@ -102,6 +102,7 @@ export default function Revision() {
         module={unit}
         sectionAction={tick}
         tableFlashcards
+        keyTerms
         scopeSlugs
         empty={!editMode && (
           <div className="py-16 border-t border-border text-center">

@@ -53,10 +53,6 @@ export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial
             </div>
           )}
           <div className="space-y-1.5">
-            <p className="chrono-eyebrow">Historian</p>
-            <Input value={draft.name || ''} onChange={(e) => set('name', e.target.value)} placeholder="e.g. Richard Pipes" />
-          </div>
-          <div className="space-y-1.5">
             <p className="chrono-eyebrow">Which part of the unit?</p>
             <Select value={draft.topic || ''} onValueChange={(v) => set('topic', v)}>
               <SelectTrigger><SelectValue placeholder="Choose a topic" /></SelectTrigger>
@@ -66,7 +62,7 @@ export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial
             </Select>
           </div>
           <div className="space-y-1.5">
-            <p className="chrono-eyebrow">School of thought (optional)</p>
+            <p className="chrono-eyebrow">School of thought</p>
             <Select value={draft.school || ''} onValueChange={(v) => set('school', v === 'none' ? '' : v)}>
               <SelectTrigger><SelectValue placeholder="Choose a school of thought" /></SelectTrigger>
               <SelectContent>
@@ -76,8 +72,12 @@ export default function AddPerspectiveDialog({ open, onOpenChange, unit, initial
             </Select>
           </div>
           <div className="space-y-1.5">
-            <p className="chrono-eyebrow">Their argument</p>
-            <Textarea rows={5} value={draft.argument || ''} onChange={(e) => set('argument', e.target.value)} placeholder="Summarise the argument in your own words…" />
+            <p className="chrono-eyebrow">The idea</p>
+            <Textarea rows={5} value={draft.argument || ''} onChange={(e) => set('argument', e.target.value)} placeholder="Summarise what this school of thought argues, in your own words…" />
+          </div>
+          <div className="space-y-1.5">
+            <p className="chrono-eyebrow">Example historian</p>
+            <Input value={draft.name || ''} onChange={(e) => set('name', e.target.value)} placeholder="e.g. Richard Pipes" />
           </div>
           <div className="space-y-1.5">
             <p className="chrono-eyebrow">Where did you find it?</p>

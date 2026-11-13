@@ -7,12 +7,12 @@ import { Button } from '@/components/ui/button';
 import ResizableImage from './ResizableImage';
 import { Plus, Type, Table2, ImageIcon, Link2, FileDown } from 'lucide-react';
 import ArchiveTable from './ArchiveTable';
+import { KeyTermHtml } from '@/lib/glossary';
 import TableFlashcards, { canFlashcard } from './TableFlashcards';
 import LinkPill from './LinkPill';
 import BlockToolbar from './BlockToolbar';
 import BlockForm from './editor/BlockForm';
 import { makeDroppableId } from '@/lib/blockDnd';
-import { stripPasteArtifacts } from '@/lib/sanitizeHtml';
 
 function ImageBlock({ b }) {
   const layout = b.image_layout || 'full';
@@ -27,7 +27,7 @@ function ImageBlock({ b }) {
     return (
       <div className="space-y-8 md:space-y-10">
         {figure(widthPct)}
-        <div className="prose-archive min-w-0" dangerouslySetInnerHTML={{ __html: stripPasteArtifacts(b.html) }} />
+        <KeyTermHtml className="prose-archive min-w-0" html={b.html} />
       </div>
     );
   }
@@ -36,7 +36,7 @@ function ImageBlock({ b }) {
     return figure(widthPct);
   }
 
-  const textEl = <div className="prose-archive min-w-0" dangerouslySetInnerHTML={{ __html: stripPasteArtifacts(b.html) }} />;
+  const textEl = <KeyTermHtml className="prose-archive min-w-0" html={b.html} />;
 
   return (
     <div className={`grid gap-8 md:gap-10 items-start overflow-hidden ${layout === 'left' ? 'md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]' : 'md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]'}`}>
@@ -162,7 +162,7 @@ export default function BlockCanvas({ section, sub, caseStudy, module, emptyLabe
                     )}
 
                     {(!b.kind || b.kind === 'text') && (
-                      <div className="prose-archive" dangerouslySetInnerHTML={{ __html: stripPasteArtifacts(b.html || '') }} />
+                      <KeyTermHtml className="prose-archive" html={b.html} />
                     )}
                   </article>
                 )}

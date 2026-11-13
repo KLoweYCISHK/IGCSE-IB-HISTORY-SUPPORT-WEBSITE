@@ -14,8 +14,8 @@ export default function Historians() {
       <PageHero
         page="historians"
         eyebrow="Paper 3 · Built by the class"
-        title="Historians bank"
-        lede="Browse the historians, learn them with flashcards, test yourself, and save the ones you want for your essays."
+        title="Perspectives bank"
+        lede="Learn what each school of thought argues. You need the ideas and the school, not who said it or the exact words."
       />
       <section className="pb-16 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">

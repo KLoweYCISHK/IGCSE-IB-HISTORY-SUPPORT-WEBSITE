@@ -9,6 +9,7 @@ import SectionCanvas from '@/components/SectionCanvas';
 import ResourceLibrary from '@/components/ResourceLibrary';
 import ExamVault from '@/components/ExamVault';
 import TextbookSection from '@/components/TextbookSection';
+import RevisionTopics from '@/components/RevisionTopics';
 import PerspectiveEngine from '@/components/perspectives/PerspectiveEngine';
 import AddPerspectiveDialog from '@/components/perspectives/AddPerspectiveDialog';
 import { UNITS } from '@/lib/perspectiveTopics';
@@ -77,6 +78,8 @@ export default function Paper3() {
 
       <SectionCanvas page="paper3" module={unit} />
 
+      <RevisionTopics key={unit} page="paper3" scope={unit} scopeLabel={UNITS[unit].label} />
+
       <TextbookSection section="paper3" module={unit} />
 
       <ResourceLibrary section="paper3" module={unit} />
@@ -87,7 +90,7 @@ export default function Paper3() {
         <SectionHeading
           eyebrow="Built by the class"
           title="Historical Perspectives"
-          description="When you find a historian or school of thought, add it here so everyone can use it."
+          description="Learn what each school of thought argues. When you find a new interpretation, add it here so everyone can use it."
         />
         <PerspectiveEngine key={unit} unit={unit} />
       </section>
