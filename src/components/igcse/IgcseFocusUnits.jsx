@@ -11,12 +11,20 @@ import RevisedTick from '@/components/RevisedTick';
 import ProgressTransfer from '@/components/ProgressTransfer';
 import IgcseFocusUnitForm from './IgcseFocusUnitForm';
 
-// Each focus unit opens to show its syllabus points and its own revision notes.
+// Each focus unit opens to show its syllabus points and its own revision notes. Used by IGCSE and IB pages.
 // Revision notes are ordinary sections, stored on the page "<page>_revision" with module = the focus unit's id.
-export default function IgcseFocusUnits({ page, title = 'Focus units', description }) {
+// noteScope (IB Paper 2): the same focus units are shared by several case studies, each with its own notes;
+// notes are then stored with module = "<unit id>__<case study>". showNotes=false lists the units without notes.
+export default function IgcseFocusUnits({
+  page, title = 'Focus units', description, eyebrow = 'Focus units & revision',
+  noteScope = '', showNotes = true, notesHint,
+  pointsLabel = 'Focus points', contentLabel = 'Specified content', pointNoun = 'focus point', pointNounPlural = 'focus points',
+  formLabels,
+}) {
   const { editMode } = useAdmin();
   const { revised } = useProgress();
   const revisionPage = `${page}_revision`;
+  const noteKey = (u) => (noteScope ? `${u.id}__${noteScope}` : u.id);
   const [units, setUnits] = useState([]);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -78,16 +86,19 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
   };
 
   const counts = useMemo(() => Object.fromEntries(units.map((u) => {
-    const mine = notes.filter((n) => n.module === u.id);
+    const mine = notes.filter((n) => n.module === noteKey(u));
     return [u.id, { total: mine.length, done: mine.filter((n) => revised[n.id]).length }];
-  })), [units, notes, revised]);
+  })), [units, notes, revised, noteScope]); // eslint-disable-line react-hooks/exhaustive-deps
   const total = units.reduce((n, u) => n + counts[u.id].total, 0);
   const done = units.reduce((n, u) => n + counts[u.id].done, 0);
+
+  // students see nothing until there is at least one focus unit
+  if (!editMode && !loading && units.length === 0) return null;
 
   return (
     <section id="focus-units" className="py-12 md:py-16 border-t border-border scroll-mt-28">
       <SectionHeading
-        eyebrow="Focus units & revision"
+        eyebrow={eyebrow}
         title={title}
         description={description}
         right={editMode ? (
@@ -97,7 +108,7 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
         ) : null}
       />
 
-      {total > 0 && (
+      {showNotes && total > 0 && (
         <div className="mb-6 rounded-sm bg-card border border-border p-5 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="font-semibold">{done} of {total} revision topics revised</p>
@@ -110,7 +121,7 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
         </div>
       )}
 
-      {editMode && units.length > 0 && (
+      {editMode && showNotes && units.length > 0 && (
         <div className="mb-6 rounded-sm border border-dashed border-[#1D4ED8] bg-[#1D4ED8]/5 p-5 text-sm space-y-1">
           <p className="font-bold">Adding revision notes (only you see this)</p>
           <p>Open a focus unit and use "Add revision subsection". Give each subsection a title, then add text, images, files or links inside it as usual.</p>
@@ -123,7 +134,7 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
         <div className="h-24 animate-pulse bg-black/[0.04] rounded" />
       ) : units.length === 0 ? (
         editMode ? (
-          <p className="text-sm font-semibold text-muted-foreground">Add your first focus unit. It will also appear as a topic in the Paper 1 question bank.</p>
+          <p className="text-sm font-semibold text-muted-foreground">Add your first focus unit, then open it to add its revision notes.</p>
         ) : null
       ) : (
         <div className="space-y-4">
@@ -146,10 +157,12 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
                     <span className="flex-1 min-w-0">
                       <span className="block font-display text-xl md:text-2xl leading-snug">{u.focus_unit}</span>
                       <span className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-foreground/70">
-                        {u.bullet_points?.length > 0 && <span>{u.bullet_points.length} focus point{u.bullet_points.length === 1 ? '' : 's'}</span>}
-                        <span className="font-semibold text-[#1E40AF]">
-                          {c.total === 0 ? 'Revision notes coming soon' : `${c.done} of ${c.total} revision topic${c.total === 1 ? '' : 's'} revised`}
-                        </span>
+                        {u.bullet_points?.length > 0 && <span>{u.bullet_points.length} {u.bullet_points.length === 1 ? pointNoun : pointNounPlural}</span>}
+                        {showNotes && (
+                          <span className="font-semibold text-[#1E40AF]">
+                            {c.total === 0 ? 'Revision notes coming soon' : `${c.done} of ${c.total} revision topic${c.total === 1 ? '' : 's'} revised`}
+                          </span>
+                        )}
                       </span>
                     </span>
                     <ChevronDown className={`shrink-0 w-5 h-5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
@@ -170,7 +183,7 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
                       <div className="grid md:grid-cols-2 gap-4">
                         {u.bullet_points?.length > 0 && (
                           <div className="rounded-sm bg-background border border-border p-5">
-                            <p className="chrono-eyebrow mb-3">Focus points</p>
+                            <p className="chrono-eyebrow mb-3">{pointsLabel}</p>
                             <ul className="space-y-1.5 list-disc pl-5 text-[15px] text-foreground/85">
                               {u.bullet_points.map((b, bi) => <li key={bi}>{b}</li>)}
                             </ul>
@@ -178,7 +191,7 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
                         )}
                         {u.specified_content?.length > 0 && (
                           <div className="rounded-sm bg-background border border-border p-5">
-                            <p className="chrono-eyebrow mb-3">Specified content</p>
+                            <p className="chrono-eyebrow mb-3">{contentLabel}</p>
                             <ul className="space-y-1.5 list-disc pl-5 text-[15px] text-foreground/85">
                               {u.specified_content.map((cnt, ci) => <li key={ci}>{cnt}</li>)}
                             </ul>
@@ -187,11 +200,13 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
                       </div>
                     )}
 
+                    {!showNotes ? (notesHint && <p className="font-semibold text-[#1E40AF]">{notesHint}</p>) : (
                     <div>
                       <h3 className="font-display text-2xl mb-4">Revision notes</h3>
                       <SectionCanvas
+                        key={noteKey(u)}
                         page={revisionPage}
-                        module={u.id}
+                        module={noteKey(u)}
                         compact
                         scopeSlugs
                         tableFlashcards
@@ -202,6 +217,7 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
                         empty={!editMode && <p className="text-foreground/60">Revision notes for this unit are on their way.</p>}
                       />
                     </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -210,7 +226,7 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
         </div>
       )}
 
-      <IgcseFocusUnitForm open={!!editing} onOpenChange={(o) => !o && setEditing(null)} initial={editing} onSave={save} />
+      <IgcseFocusUnitForm open={!!editing} onOpenChange={(o) => !o && setEditing(null)} initial={editing} onSave={save} labels={formLabels} />
     </section>
   );
 }

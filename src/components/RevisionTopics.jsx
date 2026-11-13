@@ -113,7 +113,8 @@ export default function RevisionTopics({ page, scope, scopeLabel }) {
   const remove = async (t) => { await editDb.PageSection.update(t.id, { is_deleted: true }); load(); };
 
   if (loading) return <div className="h-24 animate-pulse bg-black/[0.04] rounded my-12" />;
-  if (!editMode && topics.length === 0) return null;
+  // superseded by focus units; kept so that any topics already added still show
+  if (topics.length === 0) return null;
 
   return (
     <section id="revision" className="py-12 md:py-16 border-t border-border scroll-mt-28">
