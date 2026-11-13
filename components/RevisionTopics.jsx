@@ -146,7 +146,7 @@ export default function RevisionTopics({ page, scope, scopeLabel }) {
           <p className="font-bold">Adding revision notes (only you see this)</p>
           <p>Use "Add revision topic" for each topic{scopeLabel ? ` in ${scopeLabel}` : ''}. Open the topic and use "Add revision subsection", then add text, images, files or links inside it as usual.</p>
           <p>Students get a "Mark as revised" tick on every subsection. Any two-column table (term and meaning, date and event) also gets a "Test yourself with flashcards" button.</p>
-          <p>Key words: select a word in your saved notes and click "Make key word" to give it a meaning and Simplified Chinese. It is then highlighted everywhere it appears, and students click it to see the pop-up.</p>
+          <p>Key words: select a word in your saved notes and click "Make key word" to give it a meaning and Simplified Chinese. It belongs to that topic: it is highlighted wherever it appears in that topic's notes, and students click it to see the pop-up.</p>
         </div>
       )}
 
@@ -185,7 +185,7 @@ export default function RevisionTopics({ page, scope, scopeLabel }) {
                 <div id={`rev-topic-${t.id}`} className="border-t border-border p-5 md:p-6">
                   {c.total > 0 && (
                     <div className="flex justify-end mb-4">
-                      <UnitQuiz page={`${page}_revision`} sections={notes.filter((n) => n.module === t.id)} title={t.title} />
+                      <UnitQuiz page={`${page}_revision`} unit={t.id} sections={notes.filter((n) => n.module === t.id)} title={t.title} />
                     </div>
                   )}
                   <SectionCanvas
@@ -196,6 +196,7 @@ export default function RevisionTopics({ page, scope, scopeLabel }) {
                     scopeSlugs
                     tableFlashcards
                     keyTerms
+                    keyTermsLabel={t.title}
                     addLabel="Add revision subsection"
                     onChange={load}
                     sectionAction={(s) => <RevisedTick id={s.id} small />}

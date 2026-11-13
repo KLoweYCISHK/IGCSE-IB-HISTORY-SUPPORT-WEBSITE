@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { store } from '@/api/firebaseClient';
+import { termsFor, unitScope } from '@/lib/glossary';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check, X, RotateCcw, ListChecks } from 'lucide-react';
@@ -22,7 +23,7 @@ const withOptions = (answer, others) => {
 
 // Builds multiple-choice questions from what is already in a unit's revision notes:
 // the key words that appear in the notes, and any two-column table (term and meaning, date and event).
-function buildQuestions(blocks, terms) {
+function buildQuestions(blocks, terms, spare = []) {
   const questions = [];
   const text = blocks.map((b) => [b.title, plain(b.html), ...(b.rows || []).flat().map(plain)].join(' ')).join(' ');
   const defined = terms.filter((t) => t.title?.trim() && (t.meaning?.trim() || t.chinese?.trim()));
@@ -31,8 +32,8 @@ function buildQuestions(blocks, terms) {
 
   used.forEach((t, i) => {
     const note = t.meaning?.trim() && t.chinese?.trim() ? t.chinese.trim() : '';
-    // spare key words from the rest of the site fill the options when a unit has only a few of its own
-    const others = [...used.filter((o) => o.id !== t.id), ...defined.filter((o) => !used.includes(o))];
+    // spare key words (the unit's unused ones, then other units') fill the options when a unit has only a few of its own
+    const others = [...used.filter((o) => o.id !== t.id), ...defined.filter((o) => !used.includes(o)), ...spare];
     if (i % 2 === 0) {
       const options = withOptions(t.title.trim(), others.map((o) => o.title.trim()));
       if (options) questions.push({ label: 'Key word', prompt: 'Which key word matches this meaning?', stem: meaningOf(t), answer: t.title.trim(), options, note });
@@ -54,7 +55,8 @@ function buildQuestions(blocks, terms) {
 }
 
 // "Quiz me" for one focus unit or topic. sections = that unit's revision subsections.
-export default function UnitQuiz({ page, sections, title }) {
+// unit = the module the sections belong to; only that unit's key words are quizzed.
+export default function UnitQuiz({ page, unit, sections, title }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [all, setAll] = useState([]);
@@ -74,8 +76,10 @@ export default function UnitQuiz({ page, sections, title }) {
         store.entities.PageSection.filter({ page: 'glossary_terms' }),
       ]);
       const blocks = allBlocks.filter((b) => !b.is_deleted && slugs.has(b.sub));
-      const terms = allTerms.filter((t) => !t.is_deleted);
-      const pool = buildQuestions(blocks, terms);
+      const live = allTerms.filter((t) => !t.is_deleted);
+      const terms = termsFor(live, unitScope(page, unit ?? sections[0]?.module));
+      const spare = live.filter((t) => !terms.includes(t) && t.title?.trim() && (t.meaning?.trim() || t.chinese?.trim()));
+      const pool = buildQuestions(blocks, terms, spare);
       setAll(pool); begin(pool);
     } catch { setAll([]); setQuiz([]); }
     finally { setLoading(false); }
