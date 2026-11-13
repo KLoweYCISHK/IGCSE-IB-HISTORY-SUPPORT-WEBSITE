@@ -202,6 +202,7 @@ export default function PerspectiveEngine({ unit }) {
         onOpenChange={(o) => !o && setEditing(null)}
         unit={unit}
         initial={editing}
+        schools={schools}
         onSaved={load}
       />
     </div>
