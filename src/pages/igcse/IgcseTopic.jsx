@@ -107,7 +107,17 @@ export default function IgcseTopic() {
       )}
 
       {cfg.hasFocusUnits && (
-        <IgcseFocusUnits page={cfg.page} title="Focus units" description="The inquiry questions and key points for this unit — these become the topics in the Paper 1 question bank." />
+        <>
+          <nav aria-label="On this page" className="pb-8 flex flex-wrap gap-2">
+            {[['focus-units', 'Focus units & revision'], ['textbooks', 'Textbooks'], ['resources', 'Resources']].map(([id, label]) => (
+              <button key={id} onClick={() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                className="min-h-[40px] rounded-full border border-border px-4 text-sm font-bold hover:border-[#1D4ED8] hover:text-[#1D4ED8]">
+                {label}
+              </button>
+            ))}
+          </nav>
+          <IgcseFocusUnits page={cfg.page} title="Focus units" description="Open a focus unit to see what you need to know and its revision notes. Tick off each revision topic as you go." />
+        </>
       )}
 
       <SectionCanvas page={cfg.page} />
@@ -132,9 +142,9 @@ export default function IgcseTopic() {
           />
         </>
       )}
-      {cfg.hasTextbook && <TextbookSection section={cfg.page} caseStudy="all" />}
+      {cfg.hasTextbook && <div id="textbooks" className="scroll-mt-28"><TextbookSection section={cfg.page} caseStudy="all" /></div>}
 
-      {cfg.exam !== 'paper1' && <ResourceLibrary section={cfg.page} />}
+      {cfg.exam !== 'paper1' && <div id="resources" className="scroll-mt-28"><ResourceLibrary section={cfg.page} /></div>}
     </div>
   );
 }
