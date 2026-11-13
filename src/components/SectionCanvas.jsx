@@ -8,7 +8,8 @@ import SectionHeading from './SectionHeading';
 import BlockCanvas from './BlockCanvas';
 import SectionForm from './editor/SectionForm';
 
-export default function SectionCanvas({ page, caseStudy, module, className = '', filterFn }) {
+// sectionAction renders next to each heading (e.g. a "revised" tick); empty shows when there are no sections.
+export default function SectionCanvas({ page, caseStudy, module, className = '', filterFn, sectionAction, empty, tableFlashcards }) {
   const { editMode } = useAdmin();
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,16 +84,18 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
         <section key={s.id} className="relative group py-16 md:py-20 border-t border-border">
           {editMode && (
             <div className="absolute -top-3 right-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-card border border-border rounded px-1 py-1">
-              <button onClick={() => move(i, -1)} className="p-1.5 hover:text-[#6F551A]"><ArrowUp className="w-4 h-4" /></button>
-              <button onClick={() => move(i, 1)} className="p-1.5 hover:text-[#6F551A]"><ArrowDown className="w-4 h-4" /></button>
-              <button onClick={() => setEditing(s)} className="p-1.5 hover:text-[#6F551A]"><Pencil className="w-4 h-4" /></button>
+              <button onClick={() => move(i, -1)} className="p-1.5 hover:text-[#1D4ED8]"><ArrowUp className="w-4 h-4" /></button>
+              <button onClick={() => move(i, 1)} className="p-1.5 hover:text-[#1D4ED8]"><ArrowDown className="w-4 h-4" /></button>
+              <button onClick={() => setEditing(s)} className="p-1.5 hover:text-[#1D4ED8]"><Pencil className="w-4 h-4" /></button>
               <button onClick={() => remove(s)} className="p-1.5 hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
             </div>
           )}
-          <SectionHeading eyebrow={s.eyebrow} title={s.title} />
-          <BlockCanvas section={page} sub={s.slug} caseStudy={caseStudy} module={module} emptyLabel="No content here yet." />
+          <SectionHeading eyebrow={s.eyebrow} title={s.title} right={sectionAction ? sectionAction(s) : undefined} />
+          <BlockCanvas section={page} sub={s.slug} caseStudy={caseStudy} module={module} emptyLabel="No content here yet." tableFlashcards={tableFlashcards} />
         </section>
       ))}
+
+      {sections.length === 0 && empty}
 
       {editMode && (
         <div className="py-10 border-t border-dashed border-border">

@@ -70,7 +70,7 @@ export default function Roadmap({ section, stages }) {
             <button
               key={s.key}
               onClick={() => setActiveStage(s.key)}
-              className={`px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors ${i === stages.length - 1 ? '' : 'border-r border-border'} ${activeStage === s.key ? 'bg-[#6F551A] text-[#F4EFE3]' : 'text-foreground/60 hover:bg-black/[0.04]'}`}
+              className={`px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] transition-colors ${i === stages.length - 1 ? '' : 'border-r border-border'} ${activeStage === s.key ? 'bg-[#1D4ED8] text-white' : 'text-foreground/60 hover:bg-black/[0.04]'}`}
             >
               {s.label}
             </button>
@@ -83,9 +83,9 @@ export default function Roadmap({ section, stages }) {
           <div key={s.id} className="relative group scroll-mt-24">
             {editMode && (
               <div className="absolute -top-3 right-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-card border border-border rounded px-1 py-1">
-                <button onClick={() => move(i, -1)} className="p-1.5 hover:text-[#6F551A]"><ArrowUp className="w-4 h-4" /></button>
-                <button onClick={() => move(i, 1)} className="p-1.5 hover:text-[#6F551A]"><ArrowDown className="w-4 h-4" /></button>
-                <button onClick={() => setEditing(s)} className="p-1.5 hover:text-[#6F551A]"><Pencil className="w-4 h-4" /></button>
+                <button onClick={() => move(i, -1)} className="p-1.5 hover:text-[#1D4ED8]"><ArrowUp className="w-4 h-4" /></button>
+                <button onClick={() => move(i, 1)} className="p-1.5 hover:text-[#1D4ED8]"><ArrowDown className="w-4 h-4" /></button>
+                <button onClick={() => setEditing(s)} className="p-1.5 hover:text-[#1D4ED8]"><Pencil className="w-4 h-4" /></button>
                 <button onClick={() => remove(s)} className="p-1.5 hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
               </div>
             )}

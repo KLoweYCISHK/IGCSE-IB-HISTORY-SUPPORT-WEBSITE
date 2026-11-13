@@ -21,14 +21,14 @@ function ResourceCard({ r, editMode, onEdit, onDelete }) {
           <a href={r.file_url} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 rounded-sm border border-border bg-secondary/40 px-3 py-2 text-sm hover:bg-secondary/70">
             <FileText className="w-4 h-4 text-muted-foreground shrink-0" />
             <span className="break-all min-w-0">{r.file_name || 'Document'}</span>
-            <Download className="w-3.5 h-3.5 text-[#6F551A] shrink-0" />
+            <Download className="w-3.5 h-3.5 text-[#1D4ED8] shrink-0" />
           </a>
         )}
 
         {Array.isArray(r.links) && r.links.filter((l) => l.url || l.title).length > 0 && (
           <div className="mt-3 space-y-1.5 border-t border-border pt-3">
             {r.links.filter((l) => l.url || l.title).map((l, i) => (
-              <a key={i} href={l.url} target="_blank" rel="noreferrer" className="flex items-start gap-2 text-sm text-[#6F551A] hover:underline">
+              <a key={i} href={l.url} target="_blank" rel="noreferrer" className="flex items-start gap-2 text-sm text-[#1D4ED8] hover:underline">
                 <ExternalLink className="w-3.5 h-3.5 mt-0.5 shrink-0" />
                 <span className="min-w-0">
                   <span className="break-all">{l.title || l.url}</span>
@@ -42,7 +42,7 @@ function ResourceCard({ r, editMode, onEdit, onDelete }) {
         <div className="mt-4 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             {r.url && (
-              <a href={r.url} target="_blank" rel="noreferrer" className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#6F551A] inline-flex items-center gap-1.5">
+              <a href={r.url} target="_blank" rel="noreferrer" className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#1D4ED8] inline-flex items-center gap-1.5">
                 Open <ExternalLink className="w-3 h-3" />
               </a>
             )}
@@ -57,7 +57,7 @@ function ResourceCard({ r, editMode, onEdit, onDelete }) {
       </div>
       {editMode && (
         <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition bg-card/90 border border-border rounded">
-          <button onClick={() => onEdit(r)} className="p-1.5 hover:text-[#6F551A]"><Pencil className="w-4 h-4" /></button>
+          <button onClick={() => onEdit(r)} className="p-1.5 hover:text-[#1D4ED8]"><Pencil className="w-4 h-4" /></button>
           <button onClick={() => onDelete(r)} className="p-1.5 hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
         </div>
       )}
@@ -143,11 +143,11 @@ export default function ResourceLibrary({ section, caseStudy, module, title = 'T
         right={
           <div className="flex flex-wrap gap-2 justify-end">
             {isAdmin && (
-              <Button variant="outline" onClick={() => setFolderDraft({ title: '' })} className="border-[#6F551A] text-[#6F551A]">
+              <Button variant="outline" onClick={() => setFolderDraft({ title: '' })} className="border-[#1D4ED8] text-[#1D4ED8]">
                 <FolderPlus className="w-4 h-4 mr-1.5" /> Add a folder
               </Button>
             )}
-            <Button onClick={() => setEditing({})} className="bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]">
+            <Button onClick={() => setEditing({})} className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white">
               <Plus className="w-4 h-4 mr-1.5" /> Add a resource
             </Button>
           </div>
@@ -171,7 +171,7 @@ export default function ResourceLibrary({ section, caseStudy, module, title = 'T
                     onClick={() => setOpenFolders((o) => ({ ...o, [f.id]: !isOpen }))}
                     className="flex flex-1 min-w-0 items-center gap-3 px-5 py-4 text-left"
                   >
-                    <FolderIcon className="w-5 h-5 text-[#6F551A] shrink-0" />
+                    <FolderIcon className="w-5 h-5 text-[#1D4ED8] shrink-0" />
                     <span className="font-display text-xl leading-snug min-w-0 break-words">{f.title}</span>
                     <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground shrink-0">
                       {inside.length} {inside.length === 1 ? 'item' : 'items'}
@@ -180,7 +180,7 @@ export default function ResourceLibrary({ section, caseStudy, module, title = 'T
                   </button>
                   {editMode && (
                     <div className="flex gap-1 shrink-0">
-                      <button onClick={() => setFolderDraft({ id: f.id, title: f.title })} className="p-1.5 hover:text-[#6F551A]" aria-label="Rename folder"><Pencil className="w-4 h-4" /></button>
+                      <button onClick={() => setFolderDraft({ id: f.id, title: f.title })} className="p-1.5 hover:text-[#1D4ED8]" aria-label="Rename folder"><Pencil className="w-4 h-4" /></button>
                       <button onClick={() => deleteFolder(f)} className="p-1.5 hover:text-destructive" aria-label="Delete folder"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   )}
@@ -190,7 +190,7 @@ export default function ResourceLibrary({ section, caseStudy, module, title = 'T
                     {inside.length === 0
                       ? <p className="text-foreground/40 italic">Nothing in this folder yet.</p>
                       : <ResourceGrid items={inside} {...cardProps} />}
-                    <Button variant="ghost" size="sm" onClick={() => setEditing({ folder_id: f.id })} className="text-[#6F551A]">
+                    <Button variant="ghost" size="sm" onClick={() => setEditing({ folder_id: f.id })} className="text-[#1D4ED8]">
                       <Plus className="w-3.5 h-3.5 mr-1" /> Add to {f.title}
                     </Button>
                   </div>
@@ -219,7 +219,7 @@ export default function ResourceLibrary({ section, caseStudy, module, title = 'T
           />
           <DialogFooter>
             <Button variant="ghost" onClick={() => setFolderDraft(null)}>Cancel</Button>
-            <Button disabled={!folderDraft?.title?.trim()} onClick={saveFolder} className="bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]">Save</Button>
+            <Button disabled={!folderDraft?.title?.trim()} onClick={saveFolder} className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white">Save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

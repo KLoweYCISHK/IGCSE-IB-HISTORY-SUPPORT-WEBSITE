@@ -51,20 +51,22 @@ export default function Paper3() {
       {/* Module switcher + quick add */}
       <section className="border-b border-border bg-secondary/40">
         <div className="mx-auto max-w-[1100px] px-6 md:px-10 py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
-          <div className="inline-flex flex-wrap border border-border rounded-sm overflow-hidden self-start">
+          <div role="tablist" aria-label="Choose a unit" className="flex flex-wrap gap-2">
             {UNIT_KEYS.map((k) => (
               <button
                 key={k}
+                role="tab"
+                aria-selected={unit === k}
                 onClick={() => setUnit(k)}
-                className={`px-6 py-3 font-mono text-[11px] uppercase tracking-[0.2em] border-r border-border last:border-r-0 transition-colors ${
-                  unit === k ? 'bg-[#6F551A] text-[#F4EFE3]' : 'text-foreground/60 hover:bg-black/[0.04]'
+                className={`min-h-[44px] rounded-full px-5 text-sm font-bold transition-colors ${
+                  unit === k ? 'bg-[#1D4ED8] text-white' : 'border border-border bg-background hover:border-[#1D4ED8]'
                 }`}
               >
                 {UNITS[k].label}
               </button>
             ))}
           </div>
-          <Button className="bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]" onClick={() => setAdding(true)}>
+          <Button className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white" onClick={() => setAdding(true)}>
             <Plus className="w-4 h-4 mr-1.5" /> Add perspective
           </Button>
         </div>

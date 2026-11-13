@@ -71,7 +71,7 @@ export default function DocumentForm({ open, onOpenChange, initial, onSave, sect
             <p className="chrono-eyebrow">File (PDF or Word)</p>
             {draft.file_url ? (
               <div className="flex items-center gap-3 border border-border rounded px-3 py-2.5 bg-secondary/40">
-                <FileText className="w-5 h-5 text-[#6F551A] shrink-0" />
+                <FileText className="w-5 h-5 text-[#1D4ED8] shrink-0" />
                 <span className="text-sm truncate flex-1">{draft.file_name || 'Uploaded file'}</span>
                 <Button type="button" variant="ghost" size="sm" onClick={() => { set('file_url', ''); set('file_name', ''); }}>
                   <X className="w-4 h-4 mr-1" /> Remove
@@ -88,7 +88,7 @@ export default function DocumentForm({ open, onOpenChange, initial, onSave, sect
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button disabled={!draft.title || !draft.file_url} onClick={() => onSave(draft)} className="bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]">Save</Button>
+          <Button disabled={!draft.title || !draft.file_url} onClick={() => onSave(draft)} className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white">Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

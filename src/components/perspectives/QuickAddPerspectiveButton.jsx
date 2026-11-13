@@ -11,7 +11,7 @@ export default function QuickAddPerspectiveButton() {
   return (
     <>
       <Button
-        className="h-11 bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]"
+        className="h-11 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white"
         onClick={() => setOpen(true)}
       >
         <Plus className="w-4 h-4 mr-1.5" /> Quick add a perspective

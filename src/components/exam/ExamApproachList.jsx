@@ -16,7 +16,7 @@ function ApproachBody({ item, editMode, onEdit, onDelete }) {
 
       <Collapsible open={showExample} onOpenChange={setShowExample} className="mt-8 border-t border-border pt-6">
         <CollapsibleTrigger asChild>
-          <button className="group inline-flex items-center gap-2 text-sm font-medium text-[#6F551A] hover:text-[#5A4514]">
+          <button className="group inline-flex items-center gap-2 text-sm font-medium text-[#1D4ED8] hover:text-[#1E40AF]">
             <ChevronRight className={`w-4 h-4 transition-transform ${showExample ? 'rotate-90' : ''}`} />
             {showExample ? 'Hide annotated example' : 'View annotated example'}
           </button>
@@ -45,10 +45,10 @@ export default function ExamApproachList({ items, editMode, onEdit, onDelete }) 
         <AccordionItem key={item.id} value={item.id} className="border-b border-border">
           <AccordionTrigger className="text-left hover:no-underline py-6">
             <span className="flex items-baseline gap-4">
-              <span className="font-mono text-xs text-[#6F551A]">{String(i + 1).padStart(2, '0')}</span>
+              <span className="font-mono text-xs text-[#1D4ED8]">{String(i + 1).padStart(2, '0')}</span>
               <span className="font-display text-2xl leading-snug">{item.question}</span>
               {item.time_minutes != null && (
-                <span className="shrink-0 self-center whitespace-nowrap rounded-full border border-[#6F551A]/30 bg-[#6F551A]/10 px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-wider text-[#6F551A]">{item.time_minutes} min</span>
+                <span className="shrink-0 self-center whitespace-nowrap rounded-full border border-[#1D4ED8]/30 bg-[#1D4ED8]/10 px-2.5 py-0.5 font-mono text-[11px] uppercase tracking-wider text-[#1D4ED8]">{item.time_minutes} min</span>
               )}
             </span>
           </AccordionTrigger>

@@ -38,18 +38,18 @@ export default function PageHero({ page, eyebrow, title, lede, image }) {
   const eSideImage = meta?.side_image_url;
 
   return (
-    <header className="relative pt-16 pb-14 md:pt-24 md:pb-20 overflow-hidden">
+    <header className="relative pt-12 pb-10 md:pt-16 md:pb-14 overflow-hidden">
       {eImage && (
         <div className="absolute inset-0 -z-10">
           <Image src={eImage} alt="" className="w-full h-full object-cover opacity-25" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#F4EFE3] via-[#F4EFE3]/85 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#F4EFE3] to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#FFFFFF] via-[#FFFFFF]/85 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#FFFFFF] to-transparent" />
         </div>
       )}
       <p className="chrono-eyebrow mb-5">{eEyebrow}</p>
       <div className="flex flex-col md:flex-row md:items-center gap-8 md:gap-12">
         <div className="flex-1 min-w-0">
-          <h1 className="font-display text-6xl md:text-8xl leading-[0.92] tracking-tight">{eTitle}</h1>
+          <h1 className="font-display text-5xl md:text-7xl leading-[0.98]">{eTitle}</h1>
           {eLede && <div className="prose-archive mt-6 max-w-2xl text-lg text-foreground/70 leading-relaxed" dangerouslySetInnerHTML={{ __html: (eLede || '').replace(/&nbsp;|\u00A0/g, ' ') }} />}
         </div>
         {eSideImage && (
@@ -62,7 +62,7 @@ export default function PageHero({ page, eyebrow, title, lede, image }) {
       {editMode && (
         <button
           onClick={() => setEditing(true)}
-          className="absolute top-4 right-4 inline-flex items-center gap-1.5 border border-border bg-card/90 px-3 py-1.5 rounded-sm text-xs hover:text-[#6F551A]"
+          className="absolute top-4 right-4 inline-flex items-center gap-1.5 border border-border bg-card/90 px-3 py-1.5 rounded-sm text-xs hover:text-[#1D4ED8]"
         >
           <Pencil className="w-3.5 h-3.5" /> Edit hero
         </button>

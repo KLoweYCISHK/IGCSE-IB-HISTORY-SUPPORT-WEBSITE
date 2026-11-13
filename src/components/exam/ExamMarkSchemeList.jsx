@@ -12,7 +12,7 @@ export default function ExamMarkSchemeList({ items, editMode, onEdit, onDelete }
         <AccordionItem key={item.id} value={item.id} className="border-b border-border">
           <AccordionTrigger className="text-left hover:no-underline py-6">
             <span className="flex items-baseline gap-4">
-              <span className="font-mono text-xs text-[#6F551A]">{String(i + 1).padStart(2, '0')}</span>
+              <span className="font-mono text-xs text-[#1D4ED8]">{String(i + 1).padStart(2, '0')}</span>
               <span className="font-display text-2xl leading-snug">{item.question}</span>
             </span>
           </AccordionTrigger>

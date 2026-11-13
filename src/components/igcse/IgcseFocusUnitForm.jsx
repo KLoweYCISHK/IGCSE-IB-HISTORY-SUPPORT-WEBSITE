@@ -51,7 +51,7 @@ export default function IgcseFocusUnitForm({ open, onOpenChange, initial, onSave
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button disabled={!draft.focus_unit} onClick={() => onSave(draft)} className="bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]">Save</Button>
+          <Button disabled={!draft.focus_unit} onClick={() => onSave(draft)} className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white">Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -45,7 +45,7 @@ export default function HeroForm({ open, onOpenChange, initial, onSave }) {
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button className="bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]" onClick={() => onSave(draft)}>Save</Button>
+          <Button className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white" onClick={() => onSave(draft)}>Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

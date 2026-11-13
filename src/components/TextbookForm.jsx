@@ -45,7 +45,7 @@ export default function TextbookForm({ open, onOpenChange, initial, onSave, modu
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button disabled={!draft.title} onClick={() => onSave(draft)} className="bg-[#6F551A] hover:bg-[#5A4514] text-[#F4EFE3]">Save</Button>
+          <Button disabled={!draft.title} onClick={() => onSave(draft)} className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white">Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

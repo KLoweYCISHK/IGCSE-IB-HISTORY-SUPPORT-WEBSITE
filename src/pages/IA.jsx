@@ -7,7 +7,7 @@ import DocumentSection from '@/components/DocumentSection';
 import FinalChecklist from '@/components/FinalChecklist';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
-const tabCls = "rounded-none border-r border-border last:border-r-0 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] data-[state=active]:bg-[#6F551A] data-[state=active]:text-[#F4EFE3] data-[state=inactive]:text-foreground/60 data-[state=inactive]:hover:bg-black/[0.04]";
+const tabCls = "rounded-none border-r border-border last:border-r-0 px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.2em] data-[state=active]:bg-[#1D4ED8] data-[state=active]:text-white data-[state=inactive]:text-foreground/60 data-[state=inactive]:hover:bg-black/[0.04]";
 
 export default function IA() {
   return (

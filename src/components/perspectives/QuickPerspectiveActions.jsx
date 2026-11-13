@@ -22,19 +22,19 @@ export default function QuickPerspectiveActions() {
       <SectionHeading
         eyebrow="Paper 3 · Historiography"
         title="Historical Perspectives"
-        description="A living library built by the class. Pick a topic to jump straight to that section, or add a historian you've found."
+        description="A living library built by the class. Browse it, learn it with flashcards, quiz yourself, or add a historian you've found."
       />
       <div className="mt-8 grid sm:grid-cols-2 gap-5">
         {TOPICS.map((t) => (
           <Link
             key={t.unit}
-            to={`/paper-3?unit=${t.unit}#perspectives`}
-            className="glassine group border border-border bg-card rounded-sm p-8 hover:border-[#6F551A]"
+            to={`/historians?unit=${t.unit}`}
+            className="glassine group border border-border bg-card rounded-sm p-8 hover:border-[#1D4ED8]"
           >
             <p className="font-display text-3xl leading-snug">{t.label}</p>
             <p className="mt-3 text-sm text-foreground/55 leading-relaxed">{t.note}</p>
-            <p className="mt-6 chrono-eyebrow text-[#6F551A] inline-flex items-center gap-1.5">
-              Open this section <ArrowRight className="w-3.5 h-3.5" />
+            <p className="mt-6 chrono-eyebrow text-[#1D4ED8] inline-flex items-center gap-1.5">
+              Open the bank <ArrowRight className="w-3.5 h-3.5" />
             </p>
           </Link>
         ))}

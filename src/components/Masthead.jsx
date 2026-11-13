@@ -34,25 +34,25 @@ export default function Masthead() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-[#F4EFE3]/92 backdrop-blur-md">
-      <div className="mx-auto max-w-[1400px] px-6 md:px-10 py-5 flex flex-wrap items-center justify-between gap-5">
+    <header className="sticky top-0 z-50 border-b border-border bg-[#FFFFFF]/92 backdrop-blur-md">
+      <div className="mx-auto max-w-[1240px] px-6 md:px-10 py-3 flex flex-wrap items-center justify-between gap-5">
         <Link to="/" className="flex items-center gap-4 group">
           {track ? (
             <TrackLogo track={track} size={48} />
           ) : (
-            <span className="flex items-center justify-center w-12 h-12 rounded-full border border-[#6F551A] overflow-hidden shrink-0">
+            <span className="flex items-center justify-center w-12 h-12 rounded-full border border-[#1D4ED8] overflow-hidden shrink-0">
               {settings?.logo_url ? (
                 <Image src={settings.logo_url} alt="Logo" className="w-full h-full" />
               ) : (
-                <Landmark className="w-5 h-5 text-[#6F551A]" />
+                <Landmark className="w-5 h-5 text-[#1D4ED8]" />
               )}
             </span>
           )}
           <span>
-            <span className="block font-display text-3xl md:text-4xl leading-none tracking-[0.02em]">
+            <span className="block font-display text-2xl md:text-3xl leading-none">
               {track === 'igcse' ? 'iGCSE History' : (settings?.title || 'IB History')}
             </span>
-            <span className="block font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mt-1.5">
+            <span className="block text-xs font-semibold text-muted-foreground mt-1">
               {settings?.subtitle || 'by Ms Lowe'}
             </span>
           </span>
@@ -61,7 +61,7 @@ export default function Masthead() {
         <div className="flex items-center gap-3">
           <SiteNav />
           {editMode && (
-            <button onClick={() => setDraft({ ...settings })} className="p-2 text-muted-foreground hover:text-[#6F551A]" title="Site identity">
+            <button onClick={() => setDraft({ ...settings })} className="p-2 text-muted-foreground hover:text-[#1D4ED8]" title="Site identity">
               <Settings className="w-4 h-4" />
             </button>
           )}

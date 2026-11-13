@@ -9,22 +9,22 @@ export default function TrackGate({ onChoose }) {
   const Card = ({ value, eyebrow, title, note }) => (
     <button
       onClick={() => onChoose(value)}
-      className="glassine border border-border bg-card rounded-sm p-10 text-left hover:border-[#6F551A]"
+      className="glassine border-2 border-border bg-card rounded-sm p-8 text-left hover:border-[#1D4ED8]"
     >
       <div className="flex items-center gap-5 mb-6">
         <div className="min-w-0">
-          <p className="chrono-eyebrow text-[#6F551A] mb-3">{eyebrow}</p>
+          <p className="chrono-eyebrow text-[#1D4ED8] mb-3">{eyebrow}</p>
           <p className="font-display text-4xl leading-none">{title}</p>
         </div>
         <TrackLogo track={value} size={56} className="ml-auto shrink-0" />
       </div>
       <p className="mt-4 text-sm text-foreground/55 leading-relaxed">{note}</p>
-      <p className="mt-6 chrono-eyebrow text-[#6F551A]">Enter →</p>
+      <p className="mt-6 text-sm font-bold text-[#1D4ED8]">Enter →</p>
     </button>
   );
 
   return (
-    <div className="fixed inset-0 z-[100] bg-[#F4EFE3] flex items-center justify-center px-6 overflow-y-auto py-16">
+    <div className="fixed inset-0 z-[100] bg-[#FFFFFF] flex items-center justify-center px-6 overflow-y-auto py-16">
       <div className="absolute top-6 right-6 w-24 md:w-28 shrink-0 pointer-events-none">
         <Image src={MISS_LOWE_LOGO} alt="By Miss Lowe" fittingType="fit" className="w-full h-auto" />
       </div>
@@ -37,7 +37,7 @@ export default function TrackGate({ onChoose }) {
           Which course are you studying?
         </h1>
         <p className="text-foreground/60 mb-12">
-          Choose your track — you can switch any time from the menu.
+          Choose your course. You can switch any time from the menu.
         </p>
         <div className="grid sm:grid-cols-2 gap-5">
           <Card
