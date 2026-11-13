@@ -64,7 +64,7 @@ export default function IgcsePaper1Exam({ section = 'igcse_paper1', title = 'Pap
     setItems(await store.entities.ExamItem.filter({ section }, 'order'));
     try {
       const list = await store.entities.IgcseFocusUnit.list('order');
-      setFocusUnits(list);
+      setFocusUnits(list.filter((u) => String(u.page || '').startsWith('igcse_')));
     } catch { setFocusUnits([]); }
     try {
       const list = await store.entities.IgcseMarkSchemeTemplate.list();

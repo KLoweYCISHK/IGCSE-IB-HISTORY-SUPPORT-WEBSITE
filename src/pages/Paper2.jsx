@@ -4,7 +4,9 @@ import SectionCanvas from '@/components/SectionCanvas';
 import ResourceLibrary from '@/components/ResourceLibrary';
 import ExamVault from '@/components/ExamVault';
 import TextbookSection from '@/components/TextbookSection';
-import RevisionTopics, { RevisionCaseList } from '@/components/RevisionTopics';
+import RevisionTopics from '@/components/RevisionTopics';
+import IgcseFocusUnits from '@/components/igcse/IgcseFocusUnits';
+import { IB_UNIT_LABELS } from '@/lib/ibFocusLabels';
 import CaseStudyFilter, { CASE_STUDIES } from '@/components/CaseStudyFilter';
 
 export default function Paper2() {
@@ -32,7 +34,14 @@ export default function Paper2() {
         <>
           <SectionCanvas page="paper2" />
 
-          <RevisionCaseList page="paper2" cases={CASE_STUDIES.filter((c) => c.value !== 'all')} onPick={setCaseStudy} />
+          <IgcseFocusUnits
+            page="paper2"
+            title="Focus units"
+            description="The inquiry questions for all three case studies. Choose Hitler, Castro or Chiang Kai-shek above to open the revision notes for each one."
+            showNotes={false}
+            notesHint="Choose a case study at the top of the page to see the revision notes for this focus unit."
+            {...IB_UNIT_LABELS}
+          />
 
           <ExamVault
             section="paper2"
@@ -44,7 +53,15 @@ export default function Paper2() {
         </>
       ) : (
         <>
-          <RevisionTopics key={caseStudy} page="paper2" scope={caseStudy} scopeLabel={CASE_STUDIES.find((c) => c.value === caseStudy)?.label} />
+          <IgcseFocusUnits
+            key={caseStudy}
+            page="paper2"
+            noteScope={caseStudy}
+            title={`Focus units: ${CASE_STUDIES.find((c) => c.value === caseStudy)?.label}`}
+            description="Open a focus unit to see its revision notes for this case study. Tick off each revision topic as you go."
+            {...IB_UNIT_LABELS}
+          />
+          <RevisionTopics key={`legacy-${caseStudy}`} page="paper2" scope={caseStudy} scopeLabel={CASE_STUDIES.find((c) => c.value === caseStudy)?.label} />
           <ResourceLibrary section="paper2" caseStudy={caseStudy} />
         </>
       )}

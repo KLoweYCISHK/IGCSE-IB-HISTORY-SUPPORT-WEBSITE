@@ -4,7 +4,9 @@ import SectionCanvas from '@/components/SectionCanvas';
 import ResourceLibrary from '@/components/ResourceLibrary';
 import ExamVault from '@/components/ExamVault';
 import TextbookSection from '@/components/TextbookSection';
-import RevisionTopics, { RevisionCaseList } from '@/components/RevisionTopics';
+import RevisionTopics from '@/components/RevisionTopics';
+import IgcseFocusUnits from '@/components/igcse/IgcseFocusUnits';
+import { IB_UNIT_LABELS } from '@/lib/ibFocusLabels';
 import CaseStudyFilter from '@/components/CaseStudyFilter';
 
 const PAPER1_CASES = [
@@ -38,7 +40,19 @@ export default function Paper1() {
         <>
           <SectionCanvas page="paper1" />
 
-          <RevisionCaseList page="paper1" cases={PAPER1_CASES.filter((c) => c.value !== 'all')} onPick={setCaseStudy} />
+          <section className="py-12 md:py-16 border-t border-border">
+            <p className="chrono-eyebrow mb-3">Focus units & revision</p>
+            <h2 className="font-display text-3xl md:text-4xl leading-[1.1] mb-3">Revise by case study</h2>
+            <p className="text-foreground/60 text-[17px] mb-6">Choose a case study to open its focus units and revision notes.</p>
+            <div className="flex flex-wrap gap-3">
+              {PAPER1_CASES.filter((c) => c.value !== 'all').map((c) => (
+                <button key={c.value} onClick={() => { setCaseStudy(c.value); window.scrollTo({ top: 0 }); }}
+                  className="min-h-[48px] rounded-full bg-[#1D4ED8] px-6 font-bold text-white hover:bg-[#1E40AF]">
+                  {c.label}
+                </button>
+              ))}
+            </div>
+          </section>
 
           <ExamVault
             section="paper1"
@@ -50,7 +64,14 @@ export default function Paper1() {
         </>
       ) : (
         <>
-          <RevisionTopics key={caseStudy} page="paper1" scope={caseStudy} scopeLabel={PAPER1_CASES.find((c) => c.value === caseStudy)?.label} />
+          <IgcseFocusUnits
+            key={caseStudy}
+            page={`paper1_${caseStudy}`}
+            title={`Focus units: ${PAPER1_CASES.find((c) => c.value === caseStudy)?.label}`}
+            description="Open a focus unit to see what you need to know and its revision notes. Tick off each revision topic as you go."
+            {...IB_UNIT_LABELS}
+          />
+          <RevisionTopics key={`legacy-${caseStudy}`} page="paper1" scope={caseStudy} scopeLabel={PAPER1_CASES.find((c) => c.value === caseStudy)?.label} />
           <ResourceLibrary section="paper1" caseStudy={caseStudy} />
         </>
       )}

@@ -5,7 +5,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 
-export default function IgcseFocusUnitForm({ open, onOpenChange, initial, onSave }) {
+export default function IgcseFocusUnitForm({ open, onOpenChange, initial, onSave, labels = {} }) {
+  const L = { unit: 'Focus unit / inquiry question', points: 'Key bullet points (one per line)', content: 'Specified content (one per line)', ...labels };
   const [draft, setDraft] = useState(initial || {});
   useEffect(() => { if (open) setDraft(initial || {}); }, [open, initial]);
   const set = (k, v) => setDraft((d) => ({ ...d, [k]: v }));
@@ -23,7 +24,7 @@ export default function IgcseFocusUnitForm({ open, onOpenChange, initial, onSave
         </DialogHeader>
         <div className="space-y-4 py-2">
           <div className="space-y-2">
-            <Label className="chrono-eyebrow">Focus unit / inquiry question</Label>
+            <Label className="chrono-eyebrow">{L.unit}</Label>
             <Input
               value={draft.focus_unit || ''}
               onChange={(e) => set('focus_unit', e.target.value)}
@@ -31,7 +32,7 @@ export default function IgcseFocusUnitForm({ open, onOpenChange, initial, onSave
             />
           </div>
           <div className="space-y-2">
-            <Label className="chrono-eyebrow">Key bullet points (one per line)</Label>
+            <Label className="chrono-eyebrow">{L.points}</Label>
             <Textarea
               value={bulletsText}
               onChange={(e) => set('bullet_points', e.target.value.split('\n'))}
@@ -40,7 +41,7 @@ export default function IgcseFocusUnitForm({ open, onOpenChange, initial, onSave
             />
           </div>
           <div className="space-y-2">
-            <Label className="chrono-eyebrow">Specified content (one per line)</Label>
+            <Label className="chrono-eyebrow">{L.content}</Label>
             <Textarea
               value={specifiedText}
               onChange={(e) => set('specified_content', e.target.value.split('\n'))}

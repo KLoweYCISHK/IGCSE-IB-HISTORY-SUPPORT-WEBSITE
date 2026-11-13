@@ -10,6 +10,8 @@ import ResourceLibrary from '@/components/ResourceLibrary';
 import ExamVault from '@/components/ExamVault';
 import TextbookSection from '@/components/TextbookSection';
 import RevisionTopics from '@/components/RevisionTopics';
+import IgcseFocusUnits from '@/components/igcse/IgcseFocusUnits';
+import { IB_UNIT_LABELS } from '@/lib/ibFocusLabels';
 import PerspectiveEngine from '@/components/perspectives/PerspectiveEngine';
 import AddPerspectiveDialog from '@/components/perspectives/AddPerspectiveDialog';
 import { UNITS } from '@/lib/perspectiveTopics';
@@ -78,7 +80,14 @@ export default function Paper3() {
 
       <SectionCanvas page="paper3" module={unit} />
 
-      <RevisionTopics key={unit} page="paper3" scope={unit} scopeLabel={UNITS[unit].label} />
+      <IgcseFocusUnits
+        key={unit}
+        page={`paper3_${unit}`}
+        title={`Focus units: ${UNITS[unit].label}`}
+        description="Open a focus unit to see what you need to know and its revision notes. Tick off each revision topic as you go."
+        {...IB_UNIT_LABELS}
+      />
+      <RevisionTopics key={`legacy-${unit}`} page="paper3" scope={unit} scopeLabel={UNITS[unit].label} />
 
       <TextbookSection section="paper3" module={unit} />
 
