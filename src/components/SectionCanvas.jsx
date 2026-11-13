@@ -3,7 +3,7 @@ import { store } from '@/api/firebaseClient';
 import { editDb } from '@/api/editor';
 import { useAdmin } from '@/lib/AdminContext';
 import { Button } from '@/components/ui/button';
-import { Pencil, Trash2, Plus, ArrowUp, ArrowDown, RotateCw } from 'lucide-react';
+import { Pencil, Trash2, Plus, ArrowUp, ArrowDown, RotateCw, ChevronDown } from 'lucide-react';
 import SectionHeading from './SectionHeading';
 import BlockCanvas from './BlockCanvas';
 import SectionForm from './editor/SectionForm';
@@ -12,12 +12,14 @@ import { KeyTermScope, ManageKeyTermsButton } from '@/lib/glossary';
 // sectionAction renders next to each heading (e.g. a "revised" tick); empty shows when there are no sections.
 // compact draws smaller, card-style subsections (used for revision notes inside a focus unit).
 // scopeSlugs keeps two units' subsections apart when they share a title such as "Key terms".
-export default function SectionCanvas({ page, caseStudy, module, className = '', filterFn, sectionAction, empty, tableFlashcards, keyTerms = false, compact = false, addLabel = 'Add section', scopeSlugs = false, onChange }) {
+// collapsible (with compact) gives each subsection a "Show notes" drop-down; closed for students until they open it, open while editing.
+export default function SectionCanvas({ page, caseStudy, module, className = '', filterFn, sectionAction, empty, tableFlashcards, keyTerms = false, compact = false, addLabel = 'Add section', scopeSlugs = false, collapsible = false, onChange }) {
   const { editMode } = useAdmin();
   const [sections, setSections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editing, setEditing] = useState(null);
+  const [shown, setShown] = useState({});
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -89,7 +91,10 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
   return (
     <KeyTermScope on={keyTerms}>
     <div className={className}>
-      {sections.map((s, i) => (
+      {sections.map((s, i) => {
+        const canFold = compact && collapsible;
+        const isShown = !canFold || (shown[s.id] ?? editMode);
+        return (
         <section key={s.id} className={compact ? 'relative group rounded-sm border border-border bg-background p-5 md:p-6 mb-4' : 'relative group py-16 md:py-20 border-t border-border'}>
           {editMode && (
             <div className="absolute -top-3 right-0 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 bg-card border border-border rounded px-1 py-1">
@@ -100,19 +105,37 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
             </div>
           )}
           {compact ? (
-            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div className={`flex flex-wrap items-center justify-between gap-3 ${isShown ? 'mb-4' : ''}`}>
               <div>
                 {s.eyebrow && <p className="chrono-eyebrow mb-1">{s.eyebrow}</p>}
                 <h4 className="font-display text-xl md:text-2xl leading-tight">{s.title}</h4>
               </div>
-              {sectionAction ? sectionAction(s) : null}
+              <div className="flex flex-wrap items-center gap-2">
+                {canFold && (
+                  <button
+                    onClick={() => setShown((o) => ({ ...o, [s.id]: !isShown }))}
+                    aria-expanded={isShown}
+                    aria-controls={`notes-${s.id}`}
+                    className="inline-flex items-center gap-2 rounded-full min-h-[40px] px-4 text-sm font-bold border-2 border-border hover:border-[#1D4ED8] transition-colors"
+                  >
+                    {isShown ? 'Hide notes' : 'Show notes'}
+                    <ChevronDown className={`w-4 h-4 transition-transform ${isShown ? 'rotate-180' : ''}`} />
+                  </button>
+                )}
+                {sectionAction ? sectionAction(s) : null}
+              </div>
             </div>
           ) : (
             <SectionHeading eyebrow={s.eyebrow} title={s.title} right={sectionAction ? sectionAction(s) : undefined} />
           )}
-          <BlockCanvas section={page} sub={s.slug} caseStudy={caseStudy} module={module} emptyLabel="No content here yet." tableFlashcards={tableFlashcards} />
+          {isShown && (
+            <div id={`notes-${s.id}`}>
+              <BlockCanvas section={page} sub={s.slug} caseStudy={caseStudy} module={module} emptyLabel="No content here yet." tableFlashcards={tableFlashcards} />
+            </div>
+          )}
         </section>
-      ))}
+        );
+      })}
 
       {sections.length === 0 && empty}
 

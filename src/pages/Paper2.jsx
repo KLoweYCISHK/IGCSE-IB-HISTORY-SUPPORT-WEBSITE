@@ -34,14 +34,19 @@ export default function Paper2() {
         <>
           <SectionCanvas page="paper2" />
 
-          <IgcseFocusUnits
-            page="paper2"
-            title="Focus units"
-            description="The inquiry questions for all three case studies. Choose Hitler, Castro or Chiang Kai-shek above to open the revision notes for each one."
-            showNotes={false}
-            notesHint="Choose a case study at the top of the page to see the revision notes for this focus unit."
-            {...IB_UNIT_LABELS}
-          />
+          <section className="py-12 md:py-16 border-t border-border">
+            <p className="chrono-eyebrow mb-3">Focus units & revision</p>
+            <h2 className="font-display text-3xl md:text-4xl leading-[1.1] mb-3">Revise by case study</h2>
+            <p className="text-foreground/60 text-[17px] mb-6">Each case study has its own page of focus units, specified content and revision notes.</p>
+            <div className="flex flex-wrap gap-3">
+              {CASE_STUDIES.filter((c) => c.value !== 'all').map((c) => (
+                <button key={c.value} onClick={() => { setCaseStudy(c.value); window.scrollTo({ top: 0 }); }}
+                  className="min-h-[48px] rounded-full bg-[#1D4ED8] px-6 font-bold text-white hover:bg-[#1E40AF]">
+                  {c.label}
+                </button>
+              ))}
+            </div>
+          </section>
 
           <ExamVault
             section="paper2"
@@ -55,10 +60,9 @@ export default function Paper2() {
         <>
           <IgcseFocusUnits
             key={caseStudy}
-            page="paper2"
-            noteScope={caseStudy}
+            page={`paper2_${caseStudy}`}
             title={`Focus units: ${CASE_STUDIES.find((c) => c.value === caseStudy)?.label}`}
-            description="Open a focus unit to see its revision notes for this case study. Tick off each revision topic as you go."
+            description="Open a focus unit to see what you need to know and its revision notes. Tick off each revision topic as you go."
             {...IB_UNIT_LABELS}
           />
           <RevisionTopics key={`legacy-${caseStudy}`} page="paper2" scope={caseStudy} scopeLabel={CASE_STUDIES.find((c) => c.value === caseStudy)?.label} />
