@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Check, X, RotateCcw } from 'lucide-react';
-import { historianName } from '@/lib/perspectiveTopics';
+import { schoolOf, maskSchools, UNITS } from '@/lib/perspectiveTopics';
 
 const shuffled = (list) => {
   const a = [...list];
@@ -9,29 +9,26 @@ const shuffled = (list) => {
   return a;
 };
 
-// "Who argued this?" — the argument is shown, students pick the historian.
-function buildQuiz(items, pool) {
-  const names = [...new Set(pool.map(historianName))];
-  return shuffled(items).slice(0, 10).map((item) => {
-    const right = historianName(item);
-    const wrong = shuffled(names.filter((n) => n !== right)).slice(0, 3);
-    return { item, right, options: shuffled([right, ...wrong]) };
-  });
-}
-
+// "Which school of thought is this?" — an idea is shown, students pick the school.
+// Names and exact wording are not tested.
 export default function PerspectiveQuiz({ items, pool }) {
-  const distinct = useMemo(() => new Set(pool.map(historianName)).size, [pool]);
-  const ids = items.map((i) => i.id).join(',');
+  const usable = useMemo(() => items.filter((i) => schoolOf(i)), [items]);
+  const options = useMemo(() => {
+    const present = [...new Set(pool.map(schoolOf).filter(Boolean))];
+    const known = UNITS[pool[0]?.unit]?.schools || [];
+    return [...known.filter((s) => present.includes(s)), ...present.filter((s) => !known.includes(s))];
+  }, [pool]);
+  const ids = usable.map((i) => i.id).join(',');
   const [quiz, setQuiz] = useState([]);
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState(null);
   const [score, setScore] = useState(0);
 
-  const restart = () => { setQuiz(buildQuiz(items, pool)); setIndex(0); setPicked(null); setScore(0); };
+  const restart = () => { setQuiz(shuffled(usable).slice(0, 10)); setIndex(0); setPicked(null); setScore(0); };
   useEffect(restart, [ids]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (distinct < 2 || !items.length) {
-    return <p className="text-foreground/60">The quiz needs at least two different historians in this unit. Add more perspectives to unlock it.</p>;
+  if (options.length < 2 || !usable.length) {
+    return <p className="text-foreground/60">The quiz needs ideas from at least two schools of thought in this unit. Set the school on more ideas to unlock it.</p>;
   }
   if (!quiz.length) return null;
 
@@ -47,7 +44,8 @@ export default function PerspectiveQuiz({ items, pool }) {
   }
 
   const q = quiz[index];
-  const pick = (opt) => { if (picked) return; setPicked(opt); if (opt === q.right) setScore((s) => s + 1); };
+  const right = schoolOf(q);
+  const pick = (opt) => { if (picked) return; setPicked(opt); if (opt === right) setScore((s) => s + 1); };
 
   return (
     <div className="max-w-2xl mx-auto space-y-5">
@@ -56,13 +54,13 @@ export default function PerspectiveQuiz({ items, pool }) {
         <span>Score {score}</span>
       </div>
       <div className="rounded-sm bg-card border border-border p-7 space-y-3">
-        <p className="chrono-eyebrow">Who argued this? · {q.item.topic}</p>
-        <p className="font-display text-2xl leading-snug">{q.item.argument}</p>
+        <p className="chrono-eyebrow">Which school of thought is this? · {q.topic}</p>
+        <p className="font-display text-2xl leading-snug">{picked ? q.argument : maskSchools(q.argument, q.unit)}</p>
       </div>
       <div className="grid sm:grid-cols-2 gap-3">
-        {q.options.map((opt) => {
-          const isRight = picked && opt === q.right;
-          const isWrong = picked === opt && opt !== q.right;
+        {options.map((opt) => {
+          const isRight = picked && opt === right;
+          const isWrong = picked === opt && opt !== right;
           return (
             <button key={opt} onClick={() => pick(opt)} disabled={!!picked}
               className={`min-h-[56px] rounded-sm border-2 px-4 py-3 text-left font-semibold flex items-center justify-between gap-3 transition-colors ${
@@ -77,7 +75,7 @@ export default function PerspectiveQuiz({ items, pool }) {
       </div>
       {picked && (
         <div className="flex flex-wrap items-center justify-between gap-3" aria-live="polite">
-          <p className="font-semibold">{picked === q.right ? 'Correct.' : `Not quite. It was ${q.right}.`}</p>
+          <p className="font-semibold">{picked === right ? 'Correct.' : `Not quite. This is the ${right.toLowerCase()} view.`}</p>
           <Button onClick={() => { setIndex((i) => i + 1); setPicked(null); }} className="bg-[#111827] hover:bg-black text-white">
             {index + 1 === quiz.length ? 'See my score' : 'Next question'}
           </Button>

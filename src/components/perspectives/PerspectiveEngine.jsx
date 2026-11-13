@@ -79,6 +79,14 @@ export default function PerspectiveEngine({ unit }) {
     [items, topic, school, query, mode, saved]
   );
 
+  // browse view is grouped by school of thought, so students learn which ideas belong together
+  const groups = useMemo(() => {
+    const by = new Map();
+    filtered.forEach((i) => { const k = schoolOf(i); by.set(k, [...(by.get(k) || []), i]); });
+    const order = [...schools, ''];
+    return [...by.entries()].sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]));
+  }, [filtered, schools]);
+
   const toggleCompare = (item) => setCompare((c) => {
     if (c.some((x) => x.id === item.id)) return c.filter((x) => x.id !== item.id);
     const next = [...c, item].slice(-2);
@@ -91,7 +99,7 @@ export default function PerspectiveEngine({ unit }) {
   return (
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div role="tablist" aria-label="Ways to study the historians" className="flex flex-wrap gap-2">
+        <div role="tablist" aria-label="Ways to study the perspectives" className="flex flex-wrap gap-2">
           {MODES.map((m) => (
             <button key={m.key} role="tab" aria-selected={mode === m.key} onClick={() => { setMode(m.key); setCompare([]); }}
               className={`inline-flex items-center gap-2 min-h-[44px] rounded-full px-5 text-sm font-bold transition-colors ${
@@ -110,7 +118,7 @@ export default function PerspectiveEngine({ unit }) {
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input value={query} onChange={(e) => setQuery(e.target.value)} aria-label="Search the historians bank"
-            placeholder="Search historians, schools of thought, arguments…" className="pl-11 h-12 text-base bg-background" />
+            placeholder="Search schools of thought, ideas, historians…" className="pl-11 h-12 text-base bg-background" />
         </div>
         <div className="flex flex-wrap gap-2" aria-label="Filter by topic">
           <Chip active={topic === 'all'} onClick={() => setTopic('all')}>All topics</Chip>
@@ -138,27 +146,37 @@ export default function PerspectiveEngine({ unit }) {
       ) : (
         <>
           <p className="chrono-eyebrow">
-            {filtered.length} perspective{filtered.length === 1 ? '' : 's'}{topic !== 'all' ? ` · ${topic}` : ''}{school !== 'all' ? ` · ${school}` : ''}
+            {filtered.length} idea{filtered.length === 1 ? '' : 's'}{topic !== 'all' ? ` · ${topic}` : ''}{school !== 'all' ? ` · ${school}` : ''}
           </p>
           {filtered.length === 0 ? (
             <p className="text-foreground/60">
               {mode === 'saved'
-                ? 'Nothing saved yet. Tap the star on a historian to keep them here for your essays.'
+                ? 'Nothing saved yet. Tap the star on an idea to keep it here for your essays.'
                 : 'No perspectives found. Be the first to add one.'}
             </p>
           ) : (
-            <div className="grid md:grid-cols-2 gap-5">
-              {filtered.map((item) => (
-                <PerspectiveCard
-                  key={item.id}
-                  item={item}
-                  query={query}
-                  canManage={isAdmin || (user && item.created_by_id === user.id)}
-                  onEdit={() => setEditing(item)}
-                  onDelete={async () => { await (getEditPassword() ? editDb : store.entities).Perspective.delete(item.id); load(); }}
-                  comparing={compare.some((c) => c.id === item.id)}
-                  onCompare={() => toggleCompare(item)}
-                />
+            <div className="space-y-10">
+              {groups.map(([name, list]) => (
+                <div key={name || 'none'}>
+                  <h4 className="font-display text-2xl mb-4">
+                    {name ? `${name} school` : 'School not set yet'}
+                    <span className="ml-3 text-sm font-semibold text-foreground/60">{list.length} idea{list.length === 1 ? '' : 's'}</span>
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-5">
+                    {list.map((item) => (
+                      <PerspectiveCard
+                        key={item.id}
+                        item={item}
+                        query={query}
+                        canManage={isAdmin || (user && item.created_by_id === user.id)}
+                        onEdit={() => setEditing(item)}
+                        onDelete={async () => { await (getEditPassword() ? editDb : store.entities).Perspective.delete(item.id); load(); }}
+                        comparing={compare.some((c) => c.id === item.id)}
+                        onCompare={() => toggleCompare(item)}
+                      />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           )}
@@ -168,7 +186,7 @@ export default function PerspectiveEngine({ unit }) {
       {compare.length > 0 && !compareOpen && (mode === 'browse' || mode === 'saved') && (
         <div className="sticky bottom-20 z-30 mx-auto w-fit max-w-full flex items-center gap-3 rounded-full bg-[#111827] text-white pl-5 pr-2 py-2 shadow-xl">
           <span className="text-sm font-semibold">
-            {compare.length === 1 ? 'Pick one more historian to compare' : 'Two historians selected'}
+            {compare.length === 1 ? 'Pick one more idea to compare' : 'Two ideas selected'}
           </span>
           {compare.length === 2 && (
             <Button size="sm" className="bg-white text-[#111827] hover:bg-white/90" onClick={() => setCompareOpen(true)}>Compare</Button>

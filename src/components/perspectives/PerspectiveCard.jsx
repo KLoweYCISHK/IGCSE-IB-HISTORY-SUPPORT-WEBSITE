@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import Highlight from '@/lib/highlight';
 import { ExternalLink, Pencil, Trash2, Star, PenLine, Copy, Check, Columns2 } from 'lucide-react';
-import { schoolOf, schoolStyle, essayStarters } from '@/lib/perspectiveTopics';
+import { schoolOf, schoolStyle, essayStarters, historianName } from '@/lib/perspectiveTopics';
 import { toggle, useProgress } from '@/lib/progress';
 
-export function SchoolTag({ item }) {
+export function SchoolTag({ item, large = false }) {
   const school = schoolOf(item);
-  if (!school) return null;
+  if (!school) return large ? <span className="inline-block rounded-full border border-dashed border-border px-3 py-1 text-xs font-semibold text-foreground/60">School not set yet</span> : null;
   return (
-    <span className={`inline-block rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] ${schoolStyle(item.unit, school)}`}>
-      {school}
+    <span className={`inline-block rounded-full font-bold ${large ? 'px-4 py-1.5 text-sm' : 'px-3 py-1 text-[11px] uppercase tracking-[0.08em]'} ${schoolStyle(item.unit, school)}`}>
+      {school}{large ? ' school' : ''}
     </span>
   );
 }
@@ -42,7 +42,7 @@ export default function PerspectiveCard({ item, query = '', canManage, onEdit, o
     <article className={`relative flex flex-col gap-3 border bg-card rounded-sm p-6 ${comparing ? 'border-[#1D4ED8] ring-2 ring-[#1D4ED8]/30' : 'border-border'}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <SchoolTag item={item} />
+          <SchoolTag item={item} large />
           <span className="inline-block rounded-full border border-border px-3 py-1 text-[11px] font-semibold text-foreground/70">
             <Highlight text={item.topic} query={query} />
           </span>
@@ -58,9 +58,15 @@ export default function PerspectiveCard({ item, query = '', canManage, onEdit, o
         </button>
       </div>
 
-      <h4 className="font-display text-2xl leading-tight"><Highlight text={item.name} query={query} /></h4>
+      {/* the idea comes first; the historian is only an example of the school */}
+      <p className="text-[17px] leading-relaxed text-foreground"><Highlight text={item.argument} query={query} /></p>
 
-      <p className="text-[16px] leading-relaxed text-foreground/90"><Highlight text={item.argument} query={query} /></p>
+      {historianName(item).toLowerCase() !== schoolOf(item).toLowerCase() && (
+        <p className="text-sm text-foreground/65">
+          {schoolOf(item) ? 'Example historian: ' : 'Historian: '}
+          <span className="font-semibold text-foreground/80"><Highlight text={historianName(item)} query={query} /></span>
+        </p>
+      )}
 
       {(item.source_url || item.source_text) && (
         <div className="text-sm text-foreground/60 space-y-1">

@@ -9,8 +9,7 @@ export const IB_NAV = [
   { to: '/paper-3', label: 'Paper 3 (HL)' },
   { to: '/ia', label: 'IA' },
   { to: '/ee', label: 'EE' },
-  { to: '/revision', label: 'Revise' },
-  { to: '/historians', label: 'Historians' },
+  { to: '/historians', label: 'Perspectives' },
 ];
 
 export const IGCSE_NAV = [

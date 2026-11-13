@@ -115,6 +115,7 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
           <p className="font-bold">Adding revision notes (only you see this)</p>
           <p>Open a focus unit and use "Add revision subsection". Give each subsection a title, then add text, images, files or links inside it as usual.</p>
           <p>Students get a "Mark as revised" tick on every subsection. Any two-column table (term and meaning, date and event) also gets a "Test yourself with flashcards" button.</p>
+          <p>Key words: select a word in your saved notes and click "Make key word" to give it a meaning and Simplified Chinese. It is then highlighted everywhere it appears, and students click it to see the pop-up.</p>
         </div>
       )}
 
@@ -194,6 +195,7 @@ export default function IgcseFocusUnits({ page, title = 'Focus units', descripti
                         compact
                         scopeSlugs
                         tableFlashcards
+                        keyTerms
                         addLabel="Add revision subsection"
                         onChange={loadNotes}
                         sectionAction={(s) => <RevisedTick id={s.id} small />}

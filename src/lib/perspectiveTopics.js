@@ -64,12 +64,27 @@ export function schoolStyle(unit, school) {
   return SCHOOL_STYLES[i >= 0 ? i % SCHOOL_STYLES.length : SCHOOL_STYLES.length - 1];
 }
 
+// "Liberal" → "liberal historians"; used wherever students practise writing about a school.
+export function schoolPhrase(school) {
+  return school ? `${school.toLowerCase()} historians` : 'some historians';
+}
+
+// Students are assessed on the idea and its school of thought, not on who said it.
 export function essayStarters(item) {
-  const h = historianName(item);
+  const school = schoolOf(item);
+  const who = schoolPhrase(school);
+  const Who = who.charAt(0).toUpperCase() + who.slice(1);
+  const view = school ? `the ${school.toLowerCase()} view` : 'this interpretation';
   return [
-    `${h} argues that …`,
-    `This view is supported by ${h}, who emphasises …`,
-    `However, ${h} challenges this interpretation, suggesting that …`,
-    `${h}'s interpretation is convincing because …, although it underestimates …`,
+    `${Who} argue that …`,
+    `${view.charAt(0).toUpperCase() + view.slice(1)} is that …, which suggests …`,
+    `However, ${view} can be challenged because …`,
+    `${Who} emphasise …, whereas other interpretations stress …`,
   ];
+}
+
+// Hides school names inside an idea ("libertarian histories suggest…") so a quiz question does not give its own answer away.
+export function maskSchools(text, unit) {
+  const names = [...(UNITS[unit]?.schools || [])].sort((a, b) => b.length - a.length);
+  return names.reduce((t, n) => t.replace(new RegExp(`\\b${n}s?\\b`, 'gi'), '_____'), String(text || ''));
 }

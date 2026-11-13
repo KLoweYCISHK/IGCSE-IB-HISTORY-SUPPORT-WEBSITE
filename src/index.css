@@ -157,3 +157,10 @@
 .flip-inner.is-flipped { transform: rotateY(180deg); }
 .flip-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .flip-back { position: absolute; inset: 0; transform: rotateY(180deg); }
+
+/* Key words in revision notes: click to see the meaning */
+.key-term {
+  font: inherit; color: #1E40AF; font-weight: 600; background: #DBE6FF; border: 0; border-radius: 6px;
+  padding: 0 4px; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px;
+}
+.key-term:hover, .key-term:focus-visible { background: #1D4ED8; color: #FFFFFF; outline: none; }
