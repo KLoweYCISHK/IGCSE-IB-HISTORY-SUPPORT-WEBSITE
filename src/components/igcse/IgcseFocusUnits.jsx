@@ -4,7 +4,7 @@ import { editDb } from '@/api/editor';
 import { useAdmin } from '@/lib/AdminContext';
 import { useProgress } from '@/lib/progress';
 import { Button } from '@/components/ui/button';
-import { Plus, Pencil, Trash2, ArrowUp, ArrowDown, ChevronDown, Check } from 'lucide-react';
+import { Plus, Pencil, Trash2, ArrowUp, ArrowDown, ChevronDown, Check, Download } from 'lucide-react';
 import SectionHeading from '@/components/SectionHeading';
 import SectionCanvas from '@/components/SectionCanvas';
 import RevisedTick from '@/components/RevisedTick';
@@ -16,11 +16,20 @@ import IgcseFocusUnitForm from './IgcseFocusUnitForm';
 // Revision notes are ordinary sections, stored on the page "<page>_revision" with module = the focus unit's id.
 // noteScope (IB Paper 2): the same focus units are shared by several case studies, each with its own notes;
 // notes are then stored with module = "<unit id>__<case study>". showNotes=false lists the units without notes.
+// seed = { section, column }: while there are no focus units yet, the teacher can create them in one click from the
+// inquiry table already on that page (first column = inquiry question, `column` = that case study's lines of inquiry).
+const cellText = (html) => new DOMParser().parseFromString(String(html || ''), 'text/html').body.textContent.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+const cellLines = (html) => {
+  const doc = new DOMParser().parseFromString(String(html || '').replace(/<br\s*\/?>|<\/p>/gi, '\n'), 'text/html');
+  const items = [...doc.querySelectorAll('li')].map((li) => li.textContent);
+  return (items.length ? items : doc.body.textContent.split('\n')).map((t) => t.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim()).filter(Boolean);
+};
+
 export default function IgcseFocusUnits({
   page, title = 'Focus units', description, eyebrow = 'Focus units & revision',
   noteScope = '', showNotes = true, notesHint,
   pointsLabel = 'Focus points', contentLabel = 'Specified content', pointNoun = 'focus point', pointNounPlural = 'focus points',
-  formLabels,
+  formLabels, seed,
 }) {
   const { editMode } = useAdmin();
   const { revised } = useProgress();
@@ -31,6 +40,8 @@ export default function IgcseFocusUnits({
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null);
   const [open, setOpen] = useState({});
+  const [seedRows, setSeedRows] = useState([]);
+  const [importing, setImporting] = useState(false);
 
   const loadNotes = useCallback(async () => {
     try {
@@ -56,6 +67,30 @@ export default function IgcseFocusUnits({
     window.addEventListener('archive:reload', h);
     return () => window.removeEventListener('archive:reload', h);
   }, [load]);
+
+  // look for an inquiry table to import from (teacher only, and only while this list is empty)
+  const seedSection = seed?.section; const seedColumn = seed?.column ?? 1;
+  useEffect(() => {
+    if (!editMode || !seedSection || loading || units.length > 0) { setSeedRows([]); return; }
+    let live = true;
+    store.entities.ContentBlock.filter({ section: seedSection }, 'order').then((blocks) => {
+      const table = blocks.find((b) => !b.is_deleted && b.kind === 'table' && b.rows?.length > 1 && b.rows[0].length > seedColumn);
+      const rows = (table?.rows.slice(1) || [])
+        .map((r) => ({ focus_unit: cellText(r[0]), bullet_points: cellLines(r[seedColumn]) }))
+        .filter((r) => r.focus_unit);
+      if (live) setSeedRows(rows);
+    }).catch(() => {});
+    return () => { live = false; };
+  }, [editMode, seedSection, seedColumn, loading, units.length]);
+
+  const importSeed = async () => {
+    setImporting(true);
+    try {
+      for (let i = 0; i < seedRows.length; i++) {
+        await editDb.IgcseFocusUnit.create({ ...seedRows[i], specified_content: [], page, order: i });
+      }
+    } finally { setImporting(false); load(); }
+  };
 
   const save = async (draft) => {
     const { id, ...data } = draft;
@@ -136,7 +171,14 @@ export default function IgcseFocusUnits({
         <div className="h-24 animate-pulse bg-black/[0.04] rounded" />
       ) : units.length === 0 ? (
         editMode ? (
-          <p className="text-sm font-semibold text-muted-foreground">Add your first focus unit, then open it to add its revision notes.</p>
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-muted-foreground">Add your first focus unit, then open it to add its revision notes.</p>
+            {seedRows.length > 0 && (
+              <Button size="sm" disabled={importing} onClick={importSeed} className="bg-[#1D4ED8] hover:bg-[#1E40AF] text-white">
+                <Download className="w-3.5 h-3.5 mr-1.5" /> {importing ? 'Adding…' : `Add the ${seedRows.length} inquiry questions from the table on this page`}
+              </Button>
+            )}
+          </div>
         ) : null
       ) : (
         <div className="space-y-4">
