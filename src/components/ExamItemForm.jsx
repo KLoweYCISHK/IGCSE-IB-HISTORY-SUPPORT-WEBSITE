@@ -20,7 +20,7 @@ const PAPER2_TYPES = [
   { value: '15_marker', label: '15 Marker' },
 ];
 
-export default function ExamItemForm({ open, onOpenChange, initial, onSave, section, module }) {
+export default function ExamItemForm({ open, onOpenChange, initial, onSave, section, module, topics = [] }) {
   const [draft, setDraft] = useState(initial || {});
   useEffect(() => { if (open) setDraft(initial || {}); }, [open, initial]);
   const set = (k, v) => setDraft((d) => ({ ...d, [k]: v }));
@@ -94,7 +94,16 @@ export default function ExamItemForm({ open, onOpenChange, initial, onSave, sect
 
           {cat === 'question' && (
             <div className="space-y-4">
-              <Input value={draft.topic || ''} onChange={(e) => set('topic', e.target.value)} placeholder="Topic (e.g. emergence, Tsarist policies)" />
+              <div className="space-y-2">
+                <Label className="chrono-eyebrow">Topic</Label>
+                <Input list="exam-topic-options" value={draft.topic || ''} onChange={(e) => set('topic', e.target.value)} placeholder="Topic (e.g. Emergence, Tsarist policies)" />
+                <datalist id="exam-topic-options">
+                  {topics.map((t) => <option key={t} value={t} />)}
+                </datalist>
+                <p className="text-xs text-foreground/50">
+                  Choose a topic you have already used, or type a new one. Students filter the question bank by topic{section === 'paper2' ? ' (4 and 15 markers)' : ''}.
+                </p>
+              </div>
               {section === 'paper3' && (
                 <div className="space-y-2">
                   <Label className="chrono-eyebrow">Unit</Label>

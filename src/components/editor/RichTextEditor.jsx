@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { ensureCardsRegistered, CARD_SNIPPETS, insertCard, readCard, replaceCard } from './quillCards';
-import { ensureImageRegistered, insertImage, formatImage, removeImage } from './quillImage';
+import { ensureImageRegistered, insertImage, formatImage, removeImage, moveImage, indexAtPoint } from './quillImage';
 import { currentTable, insertTable, tableAction } from './quillTables';
 import { uploadFile } from '@/api/editor';
 import { LayoutGrid, ChevronDown, Pencil, Table2, ImagePlus, Loader2, Trash2 } from 'lucide-react';
@@ -70,6 +70,7 @@ const PLACEMENTS = [
 ];
 
 // Shown over a clicked picture: drag the corner or the slider to resize it, choose where it sits, or delete it.
+// The picture itself can be dragged to any place in the notes.
 function ImageControls({ quill, node, wrapper, onClose }) {
   const [box, setBox] = useState(null);
   const [, redraw] = useState(0);
@@ -120,6 +121,7 @@ function ImageControls({ quill, node, wrapper, onClose }) {
         onMouseDown={(e) => { if (e.target.tagName !== 'INPUT') e.preventDefault(); }}
       >
         <span className="font-bold">Image</span>
+        <span className="text-muted-foreground">Drag the picture to move it</span>
         <label className="flex items-center gap-2 font-medium">
           Size
           <input type="range" min={5} max={100} step={1} value={pct} onChange={(e) => setWidth(e.target.value)} className="w-32 accent-[#1D4ED8]" />
@@ -196,6 +198,31 @@ export default function RichTextEditor({ value, onChange, placeholder, cards = t
     };
     const onLoad = (e) => { if (e.target.tagName === 'IMG') setVersion((n) => n + 1); };
     const onResize = () => setVersion((n) => n + 1);
+    // drag a picture to any place in the notes; it lands where the mouse lets go
+    let dragged = null;
+    const onDragStart = (e) => {
+      dragged = e.target.tagName === 'IMG' && !e.target.closest('.arc-card') ? e.target : null;
+      if (!dragged) return;
+      e.stopImmediatePropagation(); // Quill cancels every drag that starts inside the notes
+      if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+    };
+    const onDragEnd = () => { dragged = null; };
+    const onDrop = (e) => {
+      const node = dragged;
+      dragged = null;
+      if (!node?.isConnected) return; // a file from the computer: Quill uploads it
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const to = indexAtPoint(quill, e.clientX, e.clientY);
+      if (to === null) return;
+      const at = moveImage(quill, node, to);
+      if (at === null) return;
+      const moved = quill.getLeaf(at + 1)?.[0]?.domNode;
+      setImage(moved?.tagName === 'IMG' ? moved : null);
+    };
+    quill.root.addEventListener('dragstart', onDragStart, true);
+    quill.root.addEventListener('dragend', onDragEnd);
+    quill.root.addEventListener('drop', onDrop, true);
     quill.root.addEventListener('click', onClick);
     quill.root.addEventListener('dblclick', onDblClick);
     quill.root.addEventListener('load', onLoad, true);
@@ -203,6 +230,9 @@ export default function RichTextEditor({ value, onChange, placeholder, cards = t
     return () => {
       quill.off('selection-change', onSelection);
       quill.off('text-change', onText);
+      quill.root.removeEventListener('dragstart', onDragStart, true);
+      quill.root.removeEventListener('dragend', onDragEnd);
+      quill.root.removeEventListener('drop', onDrop, true);
       quill.root.removeEventListener('click', onClick);
       quill.root.removeEventListener('dblclick', onDblClick);
       quill.root.removeEventListener('load', onLoad, true);

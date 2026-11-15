@@ -70,6 +70,9 @@ export default function ExamVault({ section, caseStudy, module, title = 'The Exa
     return true;
   });
 
+  // topics already used in this bank, offered as suggestions when adding a question
+  const usedTopics = Array.from(new Map(items.filter((i) => i.topic?.trim()).map((i) => [i.topic.trim().toLowerCase(), i.topic.trim()])).values());
+
   const eEyebrow = meta?.eyebrow ?? 'Examination';
   const eTitle = meta?.title ?? title;
   const eDescription = meta?.description ?? (description || 'How to approach each question, mark schemes, and a bank of practice questions.');
@@ -108,7 +111,7 @@ export default function ExamVault({ section, caseStudy, module, title = 'The Exa
       {tab === 'mark_scheme' && <ExamMarkSchemeList items={byCat('mark_scheme')} editMode={editMode} onEdit={setEditing} onDelete={del} />}
       {tab === 'question' && <ExamQuestionBank items={byCat('question')} section={section} editMode={editMode} onEdit={setEditing} onDelete={del} />}
 
-      <ExamItemForm open={!!editing} onOpenChange={(o) => !o && setEditing(null)} initial={editing} onSave={save} section={section} module={module} />
+      <ExamItemForm open={!!editing} onOpenChange={(o) => !o && setEditing(null)} initial={editing} onSave={save} section={section} module={module} topics={usedTopics} />
       <HeroForm
         open={editingMeta}
         onOpenChange={setEditingMeta}

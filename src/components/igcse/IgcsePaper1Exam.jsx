@@ -13,6 +13,7 @@ import IgcseMarkSchemeTemplates from './IgcseMarkSchemeTemplates';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from '@/components/ui/dropdown-menu';
 import { ChevronDown } from 'lucide-react';
 import { QUESTION_TYPES, genericLevels } from '@/lib/igcseMarkSchemes';
+import DoneTick, { DoneCount } from '@/components/DoneTick';
 
 function QuestionCard({ q, i, editMode, onEdit, onDelete }) {
   const [show, setShow] = useState(false);
@@ -39,12 +40,15 @@ function QuestionCard({ q, i, editMode, onEdit, onDelete }) {
             : <p className="text-foreground/40 italic">No mark scheme yet.</p>}
         </div>
       )}
-      {editMode && (
-        <div className="mt-4 flex gap-2">
-          <Button size="sm" variant="outline" onClick={() => onEdit(q)}><Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit</Button>
-          <Button size="sm" variant="ghost" onClick={() => onDelete(q.id)}><Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete</Button>
-        </div>
-      )}
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <DoneTick id={q.id} />
+        {editMode && (
+          <>
+            <Button size="sm" variant="outline" onClick={() => onEdit(q)}><Pencil className="w-3.5 h-3.5 mr-1.5" /> Edit</Button>
+            <Button size="sm" variant="ghost" onClick={() => onDelete(q.id)}><Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete</Button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -105,9 +109,8 @@ export default function IgcsePaper1Exam({ section = 'igcse_paper1', title = 'Pap
     if (selectedTopic === 'all') return inGroup;
     return inGroup.filter((q) => q.topic === selectedTopic);
   }, [questions, group, topicGroup, selectedTopic]);
-  const triggerLabel = selectedTopic !== 'all'
-    ? selectedTopic
-    : (group === 'core' ? 'Core 1 & Core 2' : group === 'depth' ? 'Depth Study' : 'All topics');
+  // students always choose one topic; there is no "all topics" view
+  const triggerLabel = selectedTopic !== 'all' ? selectedTopic : 'Choose a topic';
 
   const save = async (draft) => {
     const { id, ...data } = draft;
@@ -167,13 +170,9 @@ export default function IgcsePaper1Exam({ section = 'igcse_paper1', title = 'Pap
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-[280px]">
-            <DropdownMenuItem onSelect={() => { setGroup('all'); setSelectedTopic('all'); }}>
-              All topics
-            </DropdownMenuItem>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>Core 1 & Core 2</DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="max-h-[320px] overflow-auto w-[300px]">
-                <DropdownMenuItem onSelect={() => { setGroup('core'); setSelectedTopic('all'); }}>All</DropdownMenuItem>
                 {coreUnits.map((u) => (
                   <DropdownMenuItem key={u.id || u.focus_unit} onSelect={() => { setGroup('core'); setSelectedTopic(u.focus_unit); }}>
                     {u.focus_unit}
@@ -184,7 +183,6 @@ export default function IgcsePaper1Exam({ section = 'igcse_paper1', title = 'Pap
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>Depth Study</DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="max-h-[320px] overflow-auto w-[300px]">
-                <DropdownMenuItem onSelect={() => { setGroup('depth'); setSelectedTopic('all'); }}>All</DropdownMenuItem>
                 {depthUnits.map((u) => (
                   <DropdownMenuItem key={u.id || u.focus_unit} onSelect={() => { setGroup('depth'); setSelectedTopic(u.focus_unit); }}>
                     {u.focus_unit}
@@ -202,7 +200,7 @@ export default function IgcsePaper1Exam({ section = 'igcse_paper1', title = 'Pap
         <p className="text-foreground/55 italic text-[14px] max-w-sm">
           {selectedTopic !== 'all'
             ? 'Build your own Paper 1 — one random 4, 6 and 10-marker for this topic, with mark schemes included.'
-            : 'Choose a focus unit to browse practice questions and generate your own Paper 1.'}
+            : 'Choose a topic to browse its practice questions and generate your own Paper 1.'}
         </p>
       </div>
 
@@ -223,17 +221,20 @@ export default function IgcsePaper1Exam({ section = 'igcse_paper1', title = 'Pap
         <ExamApproachList items={approaches} editMode={editMode} onEdit={setEditing} onDelete={del} />
       </div>
 
-      {group === 'all' && selectedTopic === 'all' ? null : (
+      {selectedTopic === 'all' ? null : (
         <div>
           <p className="chrono-eyebrow mb-4">Question bank</p>
           {filtered.length === 0 ? (
             <p className="text-foreground/40 italic">No questions added yet.</p>
           ) : (
-            <div className="space-y-4">
-              {filtered.map((q, i) => (
-                <QuestionCard key={q.id} q={q} i={i} editMode={editMode} onEdit={setEditing} onDelete={del} />
-              ))}
-            </div>
+            <>
+              <DoneCount ids={filtered.map((q) => q.id)} />
+              <div className="space-y-4">
+                {filtered.map((q, i) => (
+                  <QuestionCard key={q.id} q={q} i={i} editMode={editMode} onEdit={setEditing} onDelete={del} />
+                ))}
+              </div>
+            </>
           )}
         </div>
       )}

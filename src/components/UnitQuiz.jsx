@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { store } from '@/api/firebaseClient';
 import { termsFor, unitScope } from '@/lib/glossary';
+import { buildGapQuestions } from '@/lib/gapQuestions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Check, X, RotateCcw, ListChecks } from 'lucide-react';
@@ -14,6 +15,17 @@ const plain = (html) => String(html || '').replace(/<[^>]*>/g, ' ').replace(/&nb
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const same = (a, b) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
+// Ten questions for one go: at least half from key words and tables when there are enough,
+// the rest fill-the-gap sentences from the notes, and no sentence used twice.
+const pickTen = (pool) => {
+  const gaps = [];
+  const seen = new Set();
+  shuffled(pool.filter((q) => q.sentence !== undefined)).forEach((q) => { if (!seen.has(q.sentence)) { seen.add(q.sentence); gaps.push(q); } });
+  const rest = shuffled(pool.filter((q) => q.sentence === undefined));
+  const fromRest = Math.min(rest.length, Math.max(5, 10 - gaps.length));
+  return shuffled([...rest.slice(0, fromRest), ...gaps.slice(0, 10 - fromRest)]);
+};
+
 // One right answer plus up to three different wrong ones, in a random order.
 const withOptions = (answer, others) => {
   const wrong = [];
@@ -21,8 +33,8 @@ const withOptions = (answer, others) => {
   return wrong.length >= 2 ? shuffled([answer, ...wrong]) : null;
 };
 
-// Builds multiple-choice questions from what is already in a unit's revision notes:
-// the key words that appear in the notes, and any two-column table (term and meaning, date and event).
+// Builds multiple-choice questions from what is already in a unit's revision notes: the key words that appear
+// in the notes, any two-column table (term and meaning, date and event), and fill-the-gap sentences from the notes themselves.
 function buildQuestions(blocks, terms, spare = []) {
   const questions = [];
   const text = blocks.map((b) => [b.title, plain(b.html), ...(b.rows || []).flat().map(plain)].join(' ')).join(' ');
@@ -51,7 +63,7 @@ function buildQuestions(blocks, terms, spare = []) {
       if (options) questions.push({ label: b.title || 'From the notes', prompt: head[0] && head[1] ? `${head[0]}: choose the matching ${head[1].toLowerCase()}` : 'Choose the match', stem: r[0], answer: r[1], options, note: '' });
     });
   });
-  return questions;
+  return [...questions, ...buildGapQuestions(blocks, defined, spare.map((t) => t.title.trim()))];
 }
 
 // "Quiz me" for one focus unit or topic. sections = that unit's revision subsections.
@@ -66,7 +78,7 @@ export default function UnitQuiz({ page, unit, sections, title }) {
   const [score, setScore] = useState(0);
   const [missed, setMissed] = useState([]);
 
-  const begin = (pool) => { setQuiz(shuffled(pool).slice(0, 10)); setIndex(0); setPicked(null); setScore(0); setMissed([]); };
+  const begin = (pool) => { setQuiz(pickTen(pool)); setIndex(0); setPicked(null); setScore(0); setMissed([]); };
   const start = async () => {
     setOpen(true); setLoading(true);
     try {
@@ -101,13 +113,13 @@ export default function UnitQuiz({ page, unit, sections, title }) {
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="font-display text-2xl">Quiz: {title}</DialogTitle>
-            <DialogDescription>Key words and facts from this unit's revision notes.</DialogDescription>
+            <DialogDescription>Key words, facts and fill-the-gap questions from this unit's revision notes.</DialogDescription>
           </DialogHeader>
 
           {loading ? (
             <div className="h-40 animate-pulse bg-black/[0.04] rounded" />
           ) : !quiz.length ? (
-            <p className="text-foreground/70">There is nothing to quiz here yet. The quiz uses the key words in these notes and any two-column table, such as term and meaning or date and event.</p>
+            <p className="text-foreground/70">There is nothing to quiz here yet. The quiz uses the key words in these notes, any two-column table (such as term and meaning or date and event), and full sentences in the notes that mention names, dates, figures or bolded words.</p>
           ) : index >= quiz.length ? (
             <div className="space-y-5">
               <div className="rounded-sm border border-border bg-card p-8 text-center space-y-3">
@@ -122,8 +134,8 @@ export default function UnitQuiz({ page, unit, sections, title }) {
                   <ul className="divide-y divide-border border border-border rounded-sm">
                     {missed.map((m, i) => (
                       <li key={i} className="p-4">
-                        <p className="font-bold">{m.stem}</p>
-                        <p className="text-foreground/80">{m.answer}{m.note && <span lang="zh-Hans" className="ml-2 text-[#1E40AF]">{m.note}</span>}</p>
+                        <p className="font-bold">{m.full || m.stem}</p>
+                        <p className="text-foreground/80">{m.full ? `The gap was: ${m.answer}` : m.answer}{m.note && <span lang="zh-Hans" className="ml-2 text-[#1E40AF]">{m.note}</span>}</p>
                       </li>
                     ))}
                   </ul>
@@ -138,7 +150,7 @@ export default function UnitQuiz({ page, unit, sections, title }) {
               </div>
               <div className="rounded-sm bg-card border border-border p-6 space-y-3">
                 <p className="chrono-eyebrow">{q.label} · {q.prompt}</p>
-                <p className="font-display text-2xl leading-snug">{q.stem}</p>
+                <p className={q.full ? 'text-lg font-semibold leading-relaxed' : 'font-display text-2xl leading-snug'}>{picked && q.full ? q.full : q.stem}</p>
               </div>
               <div className="grid gap-3">
                 {q.options.map((opt) => {

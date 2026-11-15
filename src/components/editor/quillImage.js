@@ -62,3 +62,47 @@ export function removeImage(quill, node) {
   quill.deleteText(index, 1, 'user');
   quill.setSelection(index, 0, 'silent');
 }
+
+
+// Moves a picture to another place in the notes (index `to`), keeping its size and placement.
+// Returns where it now sits, or null if it did not move.
+export function moveImage(quill, node, to) {
+  const blot = node?.isConnected ? Quill.find(node) : null;
+  if (!quill || !blot || typeof to !== 'number') return null;
+  const from = quill.getIndex(blot);
+  if (to === from || to === from + 1) return null;
+
+  const attributes = {};
+  ATTRS.forEach((name) => { if (node.hasAttribute(name)) attributes[name] = node.getAttribute(name); });
+  const link = node.closest('a')?.getAttribute('href');
+  if (link) attributes.link = link;
+  const picture = { image: node.getAttribute('src') };
+
+  const Delta = Quill.import('delta');
+  const change = to > from
+    ? new Delta().retain(from).delete(1).retain(to - from - 1).insert(picture, attributes)
+    : new Delta().retain(to).insert(picture, attributes).retain(from - to).delete(1);
+  quill.updateContents(change, 'user');
+
+  const at = to > from ? to - 1 : to;
+  quill.setSelection(at + 1, 0, 'silent');
+  return at;
+}
+
+// The place in the notes under the mouse, as a Quill index (null if the mouse is not over the text).
+export function indexAtPoint(quill, x, y) {
+  let native = null;
+  if (document.caretRangeFromPoint) {
+    native = document.caretRangeFromPoint(x, y);
+  } else if (document.caretPositionFromPoint) {
+    const pos = document.caretPositionFromPoint(x, y);
+    if (pos) {
+      native = document.createRange();
+      native.setStart(pos.offsetNode, pos.offset);
+      native.setEnd(pos.offsetNode, pos.offset);
+    }
+  }
+  if (!native || !quill.root.contains(native.startContainer)) return null;
+  const normalized = quill.selection.normalizeNative(native);
+  return normalized ? quill.selection.normalizedToRange(normalized).index : null;
+}

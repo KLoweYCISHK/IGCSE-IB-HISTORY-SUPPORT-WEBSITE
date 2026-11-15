@@ -3,6 +3,7 @@ import { store } from '@/api/firebaseClient';
 import { editDb } from '@/api/editor';
 import { useAdmin } from '@/lib/AdminContext';
 import { Button } from '@/components/ui/button';
+import DoneTick, { DoneCount } from '@/components/DoneTick';
 import { Plus, Pencil, Trash2, FileText, ClipboardCheck, ExternalLink } from 'lucide-react';
 import SectionHeading from '@/components/SectionHeading';
 import IgcsePaper2Form from './IgcsePaper2Form';
@@ -87,6 +88,8 @@ export default function IgcsePaper2Links({ section = 'igcse_paper2', title = 'Pa
       {filtered.length === 0 ? (
         <p className="text-foreground/40 italic">No entries added yet.</p>
       ) : (
+        <>
+        <DoneCount ids={filtered.map((e) => e.id)} noun="papers" />
         <div className="space-y-4">
           {filtered.map((e, i) => (
             <div key={e.id} className="border border-border rounded-sm p-6 bg-card">
@@ -100,6 +103,7 @@ export default function IgcsePaper2Links({ section = 'igcse_paper2', title = 'Pa
               <div className="flex flex-wrap gap-3">
                 {e.paper_url && <LinkBtn href={e.paper_url} icon={FileText} label="Paper" />}
                 {e.mark_scheme_url && <LinkBtn href={e.mark_scheme_url} icon={ClipboardCheck} label="Mark scheme" />}
+                <DoneTick id={e.id} />
               </div>
               {editMode && (
                 <div className="mt-4 flex gap-2">
@@ -110,6 +114,7 @@ export default function IgcsePaper2Links({ section = 'igcse_paper2', title = 'Pa
             </div>
           ))}
         </div>
+        </>
       )}
 
       <IgcsePaper2Form open={!!editing} onOpenChange={(o) => !o && setEditing(null)} initial={editing} onSave={save} />
