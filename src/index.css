@@ -175,3 +175,27 @@
 @media (max-width: 640px) {
   .prose-archive img[data-align="left"], .prose-archive img[data-align="right"] { float: none; display: block; margin: 0.75em auto; }
 }
+
+/* Tables in notes: words never split in the middle. A column is at least as wide as its longest word. */
+.ql-editor th, .ql-editor td, .prose-archive th, .prose-archive td { overflow-wrap: break-word; word-break: normal; }
+/* Column widths set by the teacher (col-w-20 = 20% of the table). See quillTables.js. */
+td.col-w-5, th.col-w-5 { width: 5%; }
+td.col-w-10, th.col-w-10 { width: 10%; }
+td.col-w-15, th.col-w-15 { width: 15%; }
+td.col-w-20, th.col-w-20 { width: 20%; }
+td.col-w-25, th.col-w-25 { width: 25%; }
+td.col-w-30, th.col-w-30 { width: 30%; }
+td.col-w-35, th.col-w-35 { width: 35%; }
+td.col-w-40, th.col-w-40 { width: 40%; }
+td.col-w-45, th.col-w-45 { width: 45%; }
+td.col-w-50, th.col-w-50 { width: 50%; }
+td.col-w-55, th.col-w-55 { width: 55%; }
+td.col-w-60, th.col-w-60 { width: 60%; }
+td.col-w-65, th.col-w-65 { width: 65%; }
+td.col-w-70, th.col-w-70 { width: 70%; }
+td.col-w-75, th.col-w-75 { width: 75%; }
+td.col-w-80, th.col-w-80 { width: 80%; }
+td.col-w-85, th.col-w-85 { width: 85%; }
+td.col-w-90, th.col-w-90 { width: 90%; }
+/* The editor lays tables out the same way as the student page, so what the teacher sees is what students get. */
+.ql-editor table { table-layout: auto; }

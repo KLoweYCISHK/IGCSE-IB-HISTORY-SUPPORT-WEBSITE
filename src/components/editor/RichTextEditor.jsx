@@ -3,7 +3,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { ensureCardsRegistered, CARD_SNIPPETS, insertCard, readCard, replaceCard } from './quillCards';
 import { ensureImageRegistered, insertImage, formatImage, removeImage, moveImage, indexAtPoint } from './quillImage';
-import { currentTable, insertTable, tableAction } from './quillTables';
+import { currentTable, insertTable, tableAction, ensureColumnWidthRegistered, columnWidth, measuredColumnWidth, setColumnWidth } from './quillTables';
 import { uploadFile } from '@/api/editor';
 import { LayoutGrid, ChevronDown, Pencil, Table2, ImagePlus, Loader2, Trash2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 
 ensureCardsRegistered();
 ensureImageRegistered();
+ensureColumnWidthRegistered();
 
 // Uploads each picture, then places it where the cursor is.
 async function uploadImages(quill, files, index) {
@@ -154,6 +155,7 @@ export default function RichTextEditor({ value, onChange, placeholder, cards = t
   const [tableOpen, setTableOpen] = useState(false);
   const [size, setSize] = useState({ rows: 3, columns: 2 });
   const [inTable, setInTable] = useState(false);
+  const [colWidth, setColWidth] = useState(null); // width set on the column the cursor is in (percent), or null
   const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState(null); // the picture being resized
   const [, setVersion] = useState(0); // bumped to redraw the picture outline when the notes change
@@ -180,7 +182,7 @@ export default function RichTextEditor({ value, onChange, placeholder, cards = t
     });
 
     const track = (range) => {
-      if (range) { lastRange.current = range; setInTable(!!currentTable(quill, range)); }
+      if (range) { lastRange.current = range; setInTable(!!currentTable(quill, range)); setColWidth(columnWidth(quill, range)); }
     };
     const onSelection = (range) => track(range);
     const onText = () => { track(quill.getSelection()); setVersion((n) => n + 1); };
@@ -263,6 +265,16 @@ export default function RichTextEditor({ value, onChange, placeholder, cards = t
   const handleTableAction = (action) => {
     const quill = getQuill();
     if (quill) tableAction(quill, action, where());
+  };
+
+  // wider or narrower in steps of 5% of the table; null lets the column size itself again
+  const handleColumnWidth = (step) => {
+    const quill = getQuill();
+    if (!quill) return;
+    const range = where();
+    if (step === null) { setColumnWidth(quill, null, range); return; }
+    const from = columnWidth(quill, range) || measuredColumnWidth(quill, range) || 20;
+    setColumnWidth(quill, from + step, range);
   };
 
   const handleFiles = async (e) => {
@@ -358,6 +370,11 @@ export default function RichTextEditor({ value, onChange, placeholder, cards = t
           {TABLE_REMOVALS.map(([action, label]) => (
             <button key={action} type="button" onClick={() => handleTableAction(action)} className={`${barButton} text-destructive`}>{label}</button>
           ))}
+          <span className="mx-1 h-4 w-px bg-border" />
+          <span className="px-1 text-xs font-bold">This column: {colWidth ? `${colWidth}% wide` : 'automatic width'}</span>
+          <button type="button" onClick={() => handleColumnWidth(-5)} disabled={colWidth !== null && colWidth <= 5} className={barButton}>− Narrower</button>
+          <button type="button" onClick={() => handleColumnWidth(5)} disabled={colWidth !== null && colWidth >= 90} className={barButton}>+ Wider</button>
+          <button type="button" onClick={() => handleColumnWidth(null)} disabled={colWidth === null} className={barButton}>Automatic</button>
         </div>
       )}
 
