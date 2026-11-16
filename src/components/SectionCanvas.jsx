@@ -134,6 +134,26 @@ export default function SectionCanvas({ page, caseStudy, module, className = '',
               <BlockCanvas section={page} sub={s.slug} caseStudy={caseStudy} module={module} emptyLabel="No content here yet." tableFlashcards={tableFlashcards} />
             </div>
           )}
+          {/* the same buttons again under the notes, so students need not scroll back up to hide them */}
+          {canFold && isShown && (
+            <div className="mt-5 flex flex-wrap items-center justify-end gap-2 border-t border-border pt-4">
+              <button
+                onClick={(e) => {
+                  const box = e.currentTarget.closest('section');
+                  setShown((o) => ({ ...o, [s.id]: false }));
+                  // the page gets shorter, so bring the closed box back into view
+                  requestAnimationFrame(() => box?.scrollIntoView({ block: 'center' }));
+                }}
+                aria-expanded
+                aria-controls={`notes-${s.id}`}
+                className="inline-flex items-center gap-2 rounded-full min-h-[40px] px-4 text-sm font-bold border-2 border-border hover:border-[#1D4ED8] transition-colors"
+              >
+                Hide notes
+                <ChevronDown className="w-4 h-4 rotate-180" />
+              </button>
+              {sectionAction ? sectionAction(s) : null}
+            </div>
+          )}
         </section>
         );
       })}
