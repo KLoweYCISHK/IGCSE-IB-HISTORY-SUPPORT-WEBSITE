@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import TrackGate from '@/components/TrackGate';
 
 const TrackContext = createContext({ track: null, setTrack: () => {}, clearTrack: () => {} });
@@ -16,6 +16,7 @@ export function TrackProvider({ children }) {
     } catch { return null; }
   });
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   const setTrack = useCallback((t) => {
     setTrackState(t);
@@ -27,12 +28,19 @@ export function TrackProvider({ children }) {
     try { sessionStorage.removeItem(KEY); } catch {}
   }, []);
 
+  // Choosing a course on the welcome screen always opens that course's home page,
+  // whichever page was open before the refresh.
+  const choose = useCallback((t) => {
+    setTrack(t);
+    navigate('/', { replace: true });
+  }, [setTrack, navigate]);
+
   const showGate = !track && !AUTH_ROUTES.some((r) => pathname.startsWith(r));
 
   return (
     <TrackContext.Provider value={{ track, setTrack, clearTrack }}>
       {children}
-      {showGate && <TrackGate onChoose={setTrack} />}
+      {showGate && <TrackGate onChoose={choose} />}
     </TrackContext.Provider>
   );
 }
